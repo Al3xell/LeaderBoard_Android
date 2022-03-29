@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1021633837546",
+    "project_id": "database-tournament",
+    "storage_bucket": "database-tournament.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1021633837546:android:fb283878e1e2d3f8ce1a93",
+        "android_client_info": {
+          "package_name": "com.example.projet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1021633837546-hsbhc9f3r4rdoir5ms9ar5ovjmjmur2a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD80Ek0R4jnWNv8w_dLwu4fOAlvgFv8xbs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1021633837546-hsbhc9f3r4rdoir5ms9ar5ovjmjmur2a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
