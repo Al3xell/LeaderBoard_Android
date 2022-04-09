@@ -46,6 +46,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:21.0.3'
     implementation 'com.firebaseui:firebase-ui-auth:7.2.0'
 
+    implementation 'com.google.firebase:firebase-database'
+
     implementation 'com.google.firebase:firebase-firestore'
     // Also declare the dependency for the Google Play services library and specify its version
     implementation 'com.google.android.gms:play-services-auth:20.1.0'

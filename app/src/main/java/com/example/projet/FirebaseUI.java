@@ -1,25 +1,20 @@
 package com.example.projet;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -28,7 +23,6 @@ import javax.annotation.Nullable;
 
 public class FirebaseUI extends AppCompatActivity {
 
-    private Button btn_google;
     private static final int RC_SIGN_IN = 100;
     private GoogleSignInClient googleSignInClient;
 
@@ -50,15 +44,19 @@ public class FirebaseUI extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         checkUser();
 
-        btn_google = findViewById(R.id.signInGoogle);
+        Button btn_google = findViewById(R.id.signInGoogle);
+        Button btn_email  = findViewById(R.id.signInEmail);
 
-        btn_google.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick : begin Google SignIn");
-                Intent intent = googleSignInClient.getSignInIntent();
-                startActivityForResult(intent, RC_SIGN_IN);
-            }
+        btn_google.setOnClickListener(v -> {
+            Log.d(TAG, "onClick : begin Google SignIn");
+            Intent intent = googleSignInClient.getSignInIntent();
+            startActivityForResult(intent, RC_SIGN_IN);
+        });
+
+        btn_email.setOnClickListener(v -> {
+            Log.d(TAG, "onClick : begin Google SignIn");
+            startActivity(new Intent(FirebaseUI.this, LoginActivity.class));
+            finish();
         });
     }
 
@@ -92,41 +90,33 @@ public class FirebaseUI extends AppCompatActivity {
         Log.d(TAG, "firebaseAuthWithGoogleAccount: begin firebase auth with google account");
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         firebaseAuth.signInWithCredential(credential)
-                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-                        Log.d(TAG, "onSuccess: Logged In");
+                .addOnSuccessListener(authResult -> {
+                    Log.d(TAG, "onSuccess: Logged In");
 
-                        //get logged in user
-                        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-                        //get user info
-                        String uid = firebaseUser.getUid();
-                        String email = firebaseUser.getEmail();
+                    //get logged in user
+                    FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                    //get user info
+                    String uid = firebaseUser.getUid();
+                    String email = firebaseUser.getEmail();
 
-                        Log.d(TAG, "onSuccess: Email :"+email);
-                        Log.d(TAG, "onSuccess: UID :"+uid);
+                    Log.d(TAG, "onSuccess: Email :"+email);
+                    Log.d(TAG, "onSuccess: UID :"+uid);
 
-                        //check if user is new or existing
-                        if (authResult.getAdditionalUserInfo().isNewUser()) {
-                            Log.d(TAG, "onSuccess: Account Created...\n"+email);
-                            Toast.makeText(FirebaseUI.this, "Account Created...\n"+email, Toast.LENGTH_SHORT).show();
-                        }
-                        else {
-                            Log.d(TAG, "onSuccess: Existing user...\n"+email);
-                            Toast.makeText(FirebaseUI.this, "Existing user...\n"+email, Toast.LENGTH_SHORT).show();
-                        }
-
-                        //start profile activity
-                        startActivity(new Intent(FirebaseUI.this, MainActivity.class));
-                        finish();
+                    //check if user is new or existing
+                    if (authResult.getAdditionalUserInfo().isNewUser()) {
+                        Log.d(TAG, "onSuccess: Account Created...\n"+email);
+                        Toast.makeText(FirebaseUI.this, "Account Created...\n"+email, Toast.LENGTH_SHORT).show();
                     }
+                    else {
+                        Log.d(TAG, "onSuccess: Existing user...\n"+email);
+                        Toast.makeText(FirebaseUI.this, "Existing user...\n"+email, Toast.LENGTH_SHORT).show();
+                    }
+
+                    //start profile activity
+                    startActivity(new Intent(FirebaseUI.this, MainActivity.class));
+                    finish();
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "onFailure: Loggin failed"+e.getMessage());
-                    }
-                });
+                .addOnFailureListener(e -> Log.d(TAG, "onFailure: Logging failed"+e.getMessage()));
     }
 
 
