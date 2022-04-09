@@ -10,11 +10,18 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -35,6 +42,7 @@ public class RegisterActivity extends AppCompatActivity {
     TextInputLayout labelConfirmPassword;
     TextInputLayout labelPhone;
 
+    DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://database-tournament-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -230,13 +238,58 @@ public class RegisterActivity extends AppCompatActivity {
                         Log.d(TAG, "createUserWithEmail:success");
                         FirebaseUser user = mAuth.getCurrentUser();
                         sendEmailVerification();
+
+                        String key = databaseReference.child("users").push().getKey();
+
+                        //send info to database
+                        databaseReference.child("users").child(key).child("firstName").setValue(firstNameInput.getText().toString());
+                        databaseReference.child("users").child(key).child("lastName").setValue(lastNameInput.getText().toString());
+                        databaseReference.child("users").child(key).child("email").setValue(emailInput.getText().toString());
+                        databaseReference.child("users").child(key).child("password").setValue(passwordInput.getText().toString());
+                        databaseReference.child("users").child(key).child("phoneNumber").setValue(phoneInput.getText().toString());
+
+                        //starting activity
                         startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                         finish();
                     } else {
                         // If sign in fails, display a message to the user.
-                        Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                        Toast.makeText(RegisterActivity.this, "Register failed.",
-                                Toast.LENGTH_SHORT).show();
+                        try {
+                            throw task.getException();
+                        }
+                        catch (FirebaseAuthUserCollisionException existingUser) {
+                            Log.w(TAG, "createUserWithEmail:failure", existingUser);
+                            Toast.makeText(RegisterActivity.this, "User Already Exist !\nUpdating Info",
+                                    Toast.LENGTH_SHORT).show();
+                            databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for(DataSnapshot ds : snapshot.getChildren()) {
+                                        Log.d(TAG, ds.child("email").getValue().toString());
+                                        if(ds.child("email").getValue().toString().equals(email))
+                                        {
+                                            databaseReference.child("users").child(ds.getKey()).child("firstName").setValue(firstNameInput.getText().toString());
+                                            databaseReference.child("users").child(ds.getKey()).child("lastName").setValue(lastNameInput.getText().toString());
+                                            databaseReference.child("users").child(ds.getKey()).child("email").setValue(emailInput.getText().toString());
+                                            databaseReference.child("users").child(ds.getKey()).child("password").setValue(passwordInput.getText().toString());
+                                            databaseReference.child("users").child(ds.getKey()).child("phoneNumber").setValue(phoneInput.getText().toString());
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                            finish();
+                        }
+                        catch (Exception e)
+                        {
+                            Log.d(TAG, "onComplete: " + e.getMessage());
+                        }
+
                     }
                 });
         // [END create_user_with_email]

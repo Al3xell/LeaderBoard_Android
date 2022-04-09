@@ -18,6 +18,9 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import javax.annotation.Nullable;
 
@@ -27,6 +30,8 @@ public class FirebaseUI extends AppCompatActivity {
     private GoogleSignInClient googleSignInClient;
 
     private FirebaseAuth firebaseAuth;
+    DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://database-tournament-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
+
 
     private static final String TAG = "GOOGLE_SIGN_IN_TAG";
 
@@ -106,6 +111,11 @@ public class FirebaseUI extends AppCompatActivity {
                     if (authResult.getAdditionalUserInfo().isNewUser()) {
                         Log.d(TAG, "onSuccess: Account Created...\n"+email);
                         Toast.makeText(FirebaseUI.this, "Account Created...\n"+email, Toast.LENGTH_SHORT).show();
+                        DatabaseReference users = databaseReference.child("users");
+                        String key = users.push().getKey();
+
+                        users.child(key).child("email").setValue(email);
+
                     }
                     else {
                         Log.d(TAG, "onSuccess: Existing user...\n"+email);

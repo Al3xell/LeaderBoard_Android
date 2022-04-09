@@ -12,6 +12,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
@@ -40,11 +42,12 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(login -> {
             String email = emailInput.getText().toString();
             String password = passwordInput.getText().toString();
-            if (!(email.equals("") && password.equals(""))) {
-                signIn(email, password);
-            } else {
+            if (email.equals("") || password.equals("")) {
                 Toast.makeText(LoginActivity.this, "Enter valid information !",
                         Toast.LENGTH_SHORT).show();
+            }
+            else {
+                signIn(email, password);
             }
         });
 
@@ -54,7 +57,6 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             intent.putExtra("Email", email);
             intent.putExtra("Password", password);
-            mAuth.signOut();
             startActivity(intent);
             finish();
         });
@@ -81,11 +83,30 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseUser user = mAuth.getCurrentUser();
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         finish();
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w(TAG, "signInWithEmail:failure", task.getException());
-                        Toast.makeText(LoginActivity.this, "Wrong Email or Password !",
-                                Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        try {
+                            throw task.getException();
+                        }
+                        catch (FirebaseAuthWeakPasswordException weakPassword)
+                        {
+                            Log.d(TAG, "onComplete: weak_password");
+
+                            Toast.makeText(LoginActivity.this, "Password must be at least 6 characters long !",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                        catch (FirebaseAuthInvalidCredentialsException invalidCredentialsException) {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithEmail:failure", invalidCredentialsException);
+                            Toast.makeText(LoginActivity.this, "Wrong Email or Password !",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        catch (Exception e)
+                        {
+                            Log.d(TAG, "onComplete: " + e.getMessage());
+                        }
+
                     }
                 });
         // [END sign_in_with_email]
