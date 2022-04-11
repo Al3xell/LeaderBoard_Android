@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CreateTournament">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/textInputEditText_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="140dp"
+        android:hint="Nom du tournoi"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/textInputEditText_nombre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_create"
+        android:hint="Nombre d'équipe "
+        app:layout_constraintEnd_toEndOf="@+id/textInputEditText_name"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textInputEditText_name"
+        app:layout_constraintTop_toBottomOf="@+id/textInputEditText_name" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/textInputEditText_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="284dp"
+        android:hint="Début du tournoi   ex: 06/07/2022"
+        android:layout_marginTop="@dimen/space_create"
+        app:layout_constraintEnd_toEndOf="@+id/textInputEditText_nombre"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textInputEditText_nombre"
+        app:layout_constraintTop_toBottomOf="@+id/textInputEditText_nombre"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/button_create_tournament"
+        android:layout_width="110dp"
+        android:layout_height="60dp"
+        android:text="create"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.784"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.944" />
+
+    <Button
+        android:id="@+id/button_retour_tournament"
+        android:layout_width="110dp"
+        android:layout_height="60dp"
+        android:text="retour"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.219"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.943" />
+</androidx.constraintlayout.widget.ConstraintLayout>

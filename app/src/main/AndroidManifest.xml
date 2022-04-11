@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Projet">
         <activity
+            android:name=".EcranPrincipal"
+            android:exported="false" />
+        <activity
             android:name=".RegisterActivity"
             android:exported="false" />
         <activity
@@ -27,7 +30,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".YourTournament"
+            android:exported="false" />
+        <activity
+            android:name=".CreateTournament"
+            android:exported="false" />
+        <activity
+            android:name=".Join_Tournament_team"
+            android:exported="false" />
+        <activity
+            android:name=".JoinTournament"
+            android:exported="false" />
+        <activity
+            android:name=".SplashScreen"
             android:exported="true" />
     </application>
 

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Projet</string>
+    <string name="default_web_cleint_id" />
+    <string name="Valider">Valider</string>
 </resources>
