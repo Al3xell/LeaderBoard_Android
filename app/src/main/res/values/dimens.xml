@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="topLogin">200sp</dimen>
-    <dimen name="topLogo">100sp</dimen>
-    <dimen name="half100">50sp</dimen>
+    <dimen name="topLogo">100dp</dimen>
 </resources>

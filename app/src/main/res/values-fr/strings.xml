@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="create_an_account">Créer un compte</string>
+    <string name="return_button">Retour</string>
+    <string name="surname">Nom</string>
+    <string name="name">Prénom</string>
+    <string name="email">Email</string>
+    <string name="password">Mot de passe</string>
+    <string name="confirm_password">Confirmer mot de passe</string>
+    <string name="phone_number">Numéro de téléphone</string>
+    <string name="send">Envoyer</string>
+    <string name="login">Connexion</string>
+    <string name="register">S\'enregistrer</string>
+    <string name="reset_password">Réinitialiser mot de passe</string>
+    <string name="logo">Logo</string>
+    <string name="disconnect">Déconnexion</string>
+</resources>

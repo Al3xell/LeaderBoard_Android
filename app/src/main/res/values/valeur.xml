@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="button_w">280dp</dimen>
-    <dimen name="button_h">100dp</dimen>
-    <dimen name="space_tournament">20dp</dimen>
-    <dimen name="button_wt">280dp</dimen>
-    <dimen name="button_ht">80dp</dimen>
-    <dimen name="space_create">70dp</dimen>
-</resources>

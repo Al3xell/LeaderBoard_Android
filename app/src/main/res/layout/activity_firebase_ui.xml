@@ -7,7 +7,7 @@
     tools:context=".FirebaseUI">
 
   <ImageView
-      android:id="@+id/Logo"
+      android:id="@+id/logoImageFirebase"
       android:layout_width="120dp"
       android:layout_height="120dp"
       android:layout_marginTop="@dimen/topLogo"
@@ -31,7 +31,7 @@
       app:layout_constraintEnd_toEndOf="@+id/signInEmail"
       app:layout_constraintHorizontal_bias="0.497"
       app:layout_constraintStart_toStartOf="@+id/signInEmail"
-      app:layout_constraintTop_toBottomOf="@+id/Logo"
+      app:layout_constraintTop_toBottomOf="@+id/logoImageFirebase"
       app:layout_constraintVertical_bias="0.47000003"
       tools:ignore="RtlHardcoded" />
 
@@ -45,7 +45,7 @@
       app:layout_constraintBottom_toTopOf="@+id/signInGoogle"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/Logo"
+      app:layout_constraintTop_toBottomOf="@+id/logoImageFirebase"
       app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

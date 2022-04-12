@@ -1,5 +1,17 @@
 <resources>
-    <string name="app_name">Projet</string>
-    <string name="default_web_cleint_id" />
-    <string name="Valider">Valider</string>
+    <string name="app_name" translatable="false">ArenaTournament</string>
+    <string name="create_an_account">Create an account</string>
+    <string name="return_button">Return</string>
+    <string name="surname">Surname</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="phone_number">Phone number</string>
+    <string name="send">Send</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="reset_password">Reset password</string>
+    <string name="logo">Logo</string>
+    <string name="disconnect">Disconnect</string>
 </resources>
