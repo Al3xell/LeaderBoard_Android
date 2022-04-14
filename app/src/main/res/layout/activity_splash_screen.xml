@@ -4,39 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SplashScreen">
+    tools:context=".SplashScreenActivity">
 
     <ImageView
-        android:id="@+id/image_icon"
+        android:id="@+id/appIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/app_name"
         android:src="@drawable/cup"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ImageContrastCheck" />
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="75dp"
         android:layout_height="76dp"
-        android:progressTint="@color/chargement"
-        android:indeterminateTint="@color/chargement"
+        android:indeterminateTint="@color/secondaryColor"
+        android:progressTint="@color/secondaryColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_icon"
+        app:layout_constraintTop_toBottomOf="@+id/appIcon"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/textView2"
-        android:textColor="@color/dark"
-        android:layout_width="237dp"
-        android:layout_height="49dp"
-        android:text="WORLD CHAMPIONSHIP"
+        android:id="@+id/appNameLabelSplash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
         android:textAlignment="center"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/image_icon"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/appIcon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

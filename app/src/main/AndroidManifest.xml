@@ -12,9 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Projet">
         <activity
-            android:name=".EcranPrincipal"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity
@@ -24,7 +21,7 @@
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".FirebaseUI"
+            android:name=".ConnexionActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,20 +30,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".YourTournament"
-            android:exported="false" />
-        <activity
             android:name=".CreateTournament"
             android:exported="false" />
         <activity
-            android:name=".Join_Tournament_team"
-            android:exported="false" />
-        <activity
-            android:name=".JoinTournament"
-            android:exported="false" />
-        <activity
-            android:name=".SplashScreen"
+            android:name=".SplashScreenActivity"
             android:exported="true" />
+        
     </application>
 
 </manifest>

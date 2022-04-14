@@ -6,7 +6,6 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +14,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -35,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
         EditText passwordInput = findViewById(R.id.txtPassword);
 
         btnReturn.setOnClickListener(back -> {
-            startActivity(new Intent(LoginActivity.this, FirebaseUI.class));
+            startActivity(new Intent(LoginActivity.this, ConnexionActivity.class));
             finish();
         });
 
@@ -86,7 +87,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                     else {
                         try {
-                            throw task.getException();
+                            throw Objects.requireNonNull(task.getException());
                         }
                         catch (FirebaseAuthWeakPasswordException weakPassword)
                         {

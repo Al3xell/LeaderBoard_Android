@@ -14,4 +14,23 @@
     <string name="reset_password">Reset password</string>
     <string name="logo">Logo</string>
     <string name="disconnect">Disconnect</string>
+    <string name="error_name">Name required</string>
+    <string name="error_surname">Surname required</string>
+    <string name="error_email_required">Email required</string>
+    <string name="error_email_invalid">Email invalid</string>
+    <string name="error_password_required">Password required</string>
+    <string name="error_password_invalid">Password must be at least 6 characters long</string>
+    <string name="error_confirm_password_required">Confirmation required</string>
+    <string name="error_confirm_password_invalid">Passwords are not corresponding</string>
+    <string name="error_phone">Phone number required</string>
+    <string name="error_phone_invalid">Phone number invalid</string>
+    <string name="change_info">Change your information</string>
+    <string name="unknown">Unknown</string>
+    <string name="avatar">Avatar</string>
+    <string name="change_password">Change Password</string>
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="account">Account</string>
+
+
 </resources>

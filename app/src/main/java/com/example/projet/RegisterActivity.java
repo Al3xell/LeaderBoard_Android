@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -22,6 +23,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Objects;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -42,7 +45,8 @@ public class RegisterActivity extends AppCompatActivity {
     TextInputLayout labelConfirmPassword;
     TextInputLayout labelPhone;
 
-    DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://database-tournament-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
+    DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://database-tournament-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,16 +92,25 @@ public class RegisterActivity extends AppCompatActivity {
         setupFloatingLabelError();
     }
     boolean isEmailValid(CharSequence email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
+    boolean isPhoneValid(CharSequence phone) {
+        if (phone.length() != 10) {
+            return false;
+        } else {
+            return android.util.Patterns.PHONE.matcher(phone).matches();
+        }
+    }
+
+
     private void setupFloatingLabelError() {
 
-        labelFirstName.getEditText().addTextChangedListener(new TextWatcher() {
+        Objects.requireNonNull(labelFirstName.getEditText()).addTextChangedListener(new TextWatcher() {
             // ...
             @Override
             public void onTextChanged(CharSequence text, int start, int count, int after) {
                 if (text.length() == 0 ) {
-                    labelFirstName.setError("Prénom requis");
+                    labelFirstName.setError(getString(R.string.error_name));
                     labelFirstName.setErrorEnabled(true);
                 } else {
                     labelFirstName.setErrorEnabled(false);
@@ -112,12 +125,12 @@ public class RegisterActivity extends AppCompatActivity {
 
             }
         });
-        labelLastName.getEditText().addTextChangedListener(new TextWatcher() {
+        Objects.requireNonNull(labelLastName.getEditText()).addTextChangedListener(new TextWatcher() {
             // ...
             @Override
             public void onTextChanged(CharSequence text, int start, int count, int after) {
                 if (text.length() == 0 ) {
-                    labelLastName.setError("Nom requis");
+                    labelLastName.setError(getString(R.string.error_surname));
                     labelLastName.setErrorEnabled(true);
                 } else {
                     labelLastName.setErrorEnabled(false);
@@ -132,16 +145,16 @@ public class RegisterActivity extends AppCompatActivity {
 
             }
         });
-        labelEmail.getEditText().addTextChangedListener(new TextWatcher() {
+        Objects.requireNonNull(labelEmail.getEditText()).addTextChangedListener(new TextWatcher() {
             // ...
             @Override
             public void onTextChanged(CharSequence text, int start, int count, int after) {
                 if (text.length() == 0 ) {
-                    labelFirstName.setError("Mot de passe requis");
-                    labelFirstName.setErrorEnabled(true);
+                    labelEmail.setError(getString(R.string.error_email_required));
+                    labelEmail.setErrorEnabled(true);
                 }
                 else if (!isEmailValid(emailInput.getText().toString())) {
-                    labelEmail.setError("Email Invalid");
+                    labelEmail.setError(getString(R.string.error_email_invalid));
                     labelEmail.setErrorEnabled(true);
                 } else {
                     labelEmail.setErrorEnabled(false);
@@ -156,16 +169,16 @@ public class RegisterActivity extends AppCompatActivity {
 
             }
         });
-        labelPassword.getEditText().addTextChangedListener(new TextWatcher() {
+        Objects.requireNonNull(labelPassword.getEditText()).addTextChangedListener(new TextWatcher() {
             // ...
             @Override
             public void onTextChanged(CharSequence text, int start, int count, int after) {
                 if (text.length() == 0 ) {
-                    labelPassword.setError("Mot de passe requis");
+                    labelPassword.setError(getString(R.string.error_password_required));
                     labelPassword.setErrorEnabled(true);
                 }
                 else if (text.length() < 6) {
-                    labelPassword.setError("Le mot de passe doit être de 6 caractères minimums");
+                    labelPassword.setError(getString(R.string.error_password_invalid));
                     labelPassword.setErrorEnabled(true);
                 }
 
@@ -182,16 +195,16 @@ public class RegisterActivity extends AppCompatActivity {
 
             }
         });
-        labelConfirmPassword.getEditText().addTextChangedListener(new TextWatcher() {
+        Objects.requireNonNull(labelConfirmPassword.getEditText()).addTextChangedListener(new TextWatcher() {
             // ...
             @Override
             public void onTextChanged(CharSequence text, int start, int count, int after) {
                 if (text.length() == 0 ) {
-                    labelConfirmPassword.setError("Confirmation requise");
+                    labelConfirmPassword.setError(getString(R.string.error_confirm_password_required));
                     labelConfirmPassword.setErrorEnabled(true);
                 }
                 else if (!passwordInput.getText().toString().equals(confirmInput.getText().toString())){
-                    labelConfirmPassword.setError("Les mots de passes ne correspondent pas");
+                    labelConfirmPassword.setError(getString(R.string.error_confirm_password_invalid));
                     labelConfirmPassword.setErrorEnabled(true);
                 }
 
@@ -208,12 +221,15 @@ public class RegisterActivity extends AppCompatActivity {
 
             }
         });
-        labelPhone.getEditText().addTextChangedListener(new TextWatcher() {
+        Objects.requireNonNull(labelPhone.getEditText()).addTextChangedListener(new TextWatcher() {
             // ...
             @Override
             public void onTextChanged(CharSequence text, int start, int count, int after) {
                 if (text.length() == 0 ) {
-                    labelPhone.setError("Numéro de téléphone requis requis");
+                    labelPhone.setError(getString(R.string.error_phone));
+                    labelPhone.setErrorEnabled(true);
+                } else if (!isPhoneValid(phoneInput.getText().toString())) {
+                    labelPhone.setError(getString(R.string.error_phone_invalid));
                     labelPhone.setErrorEnabled(true);
                 } else {
                     labelPhone.setErrorEnabled(false);
@@ -236,17 +252,16 @@ public class RegisterActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "createUserWithEmail:success");
-                        FirebaseUser user = mAuth.getCurrentUser();
                         sendEmailVerification();
 
-                        String key = databaseReference.child("users").push().getKey();
+                        String key = mAuth.getUid();
 
                         //send info to database
-                        databaseReference.child("users").child(key).child("firstName").setValue(firstNameInput.getText().toString());
-                        databaseReference.child("users").child(key).child("lastName").setValue(lastNameInput.getText().toString());
-                        databaseReference.child("users").child(key).child("email").setValue(emailInput.getText().toString());
-                        databaseReference.child("users").child(key).child("password").setValue(passwordInput.getText().toString());
-                        databaseReference.child("users").child(key).child("phoneNumber").setValue(phoneInput.getText().toString());
+                        assert key != null;
+                        databaseReference.child(key).child("firstName").setValue(firstNameInput.getText().toString());
+                        databaseReference.child(key).child("lastName").setValue(lastNameInput.getText().toString());
+                        databaseReference.child(key).child("password").setValue(passwordInput.getText().toString());
+                        databaseReference.child(key).child("phoneNumber").setValue(phoneInput.getText().toString());
 
                         //starting activity
                         startActivity(new Intent(RegisterActivity.this, MainActivity.class));
@@ -254,25 +269,24 @@ public class RegisterActivity extends AppCompatActivity {
                     } else {
                         // If sign in fails, display a message to the user.
                         try {
-                            throw task.getException();
+                            throw Objects.requireNonNull(task.getException());
                         }
                         catch (FirebaseAuthUserCollisionException existingUser) {
                             Log.w(TAG, "createUserWithEmail:failure", existingUser);
                             Toast.makeText(RegisterActivity.this, "User Already Exist !\nUpdating Info",
                                     Toast.LENGTH_SHORT).show();
-                            databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     for(DataSnapshot ds : snapshot.getChildren()) {
-                                        Log.d(TAG, ds.child("email").getValue().toString());
-                                        if(ds.child("email").getValue().toString().equals(email))
+
+                                        if(Objects.equals(email, ds.child("email").getValue()))
                                         {
-                                            databaseReference.child("users").child(ds.getKey()).child("firstName").setValue(firstNameInput.getText().toString());
-                                            databaseReference.child("users").child(ds.getKey()).child("lastName").setValue(lastNameInput.getText().toString());
-                                            databaseReference.child("users").child(ds.getKey()).child("email").setValue(emailInput.getText().toString());
-                                            databaseReference.child("users").child(ds.getKey()).child("password").setValue(passwordInput.getText().toString());
-                                            databaseReference.child("users").child(ds.getKey()).child("phoneNumber").setValue(phoneInput.getText().toString());
-                                            break;
+                                            assert ds.getKey() != null;
+                                            databaseReference.child(ds.getKey()).child("firstName").setValue(firstNameInput.getText().toString());
+                                            databaseReference.child(ds.getKey()).child("lastName").setValue(lastNameInput.getText().toString());
+                                            databaseReference.child(ds.getKey()).child("password").setValue(passwordInput.getText().toString());
+                                            databaseReference.child(ds.getKey()).child("phoneNumber").setValue(phoneInput.getText().toString());
                                         }
                                     }
                                 }
@@ -282,8 +296,6 @@ public class RegisterActivity extends AppCompatActivity {
 
                                 }
                             });
-                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                            finish();
                         }
                         catch (Exception e)
                         {
@@ -298,6 +310,7 @@ public class RegisterActivity extends AppCompatActivity {
         // Send verification email
         // [START send_email_verification]
         final FirebaseUser user = mAuth.getCurrentUser();
+        assert user != null;
         user.sendEmailVerification()
                 .addOnCompleteListener(this, task -> {
                     // Email sent

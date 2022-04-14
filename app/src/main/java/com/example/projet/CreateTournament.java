@@ -17,16 +17,8 @@ public class CreateTournament extends AppCompatActivity {
         setContentView(R.layout.activity_create_tournament);
 
         button = findViewById(R.id.button_retour_tournament);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openCh();
+        button.setOnClickListener(v -> {
 
-            }
         });
-    }
-    private void openCh() {
-        Intent intent = new Intent(this, EcranPrincipal.class);
-        startActivity(intent);
     }
 }
