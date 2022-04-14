@@ -43,6 +43,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 public class AccountFragment extends Fragment {
 
     private static final int READ_EXTERNAL_STORAGE = 1;
+    private Uri mCropImageUri;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser user;
@@ -101,6 +102,7 @@ public class AccountFragment extends Fragment {
                 CropImage.activity()
                         .setGuidelines(CropImageView.Guidelines.ON)
                         .setCropShape(CropImageView.CropShape.OVAL)
+                        .setFixAspectRatio(true)
                         .start(getContext(), this);
             } else {
                 askPermission();
@@ -181,6 +183,7 @@ public class AccountFragment extends Fragment {
             }
         }).create().show();
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
