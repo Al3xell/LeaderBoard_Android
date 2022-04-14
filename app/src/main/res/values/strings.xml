@@ -31,6 +31,10 @@
     <string name="home">Home</string>
     <string name="search">Search</string>
     <string name="account">Account</string>
+    <string name="permission">Permission</string>
+    <string name="explanation">Please provide permission to be allowed to change your avatar</string>
+    <string name="cancel">Cancel</string>
+    <string name="proceed">Proceed</string>
 
 
 </resources>

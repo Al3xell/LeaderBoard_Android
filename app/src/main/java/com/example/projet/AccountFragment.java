@@ -1,6 +1,9 @@
 package com.example.projet;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -10,6 +13,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -22,20 +26,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.util.Objects;
 
 public class AccountFragment extends Fragment {
+
+    private static final int READ_EXTERNAL_STORAGE = 1;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser user;
@@ -88,13 +95,16 @@ public class AccountFragment extends Fragment {
 
         displayInfo();
 
-
-        ActivityResultLauncher<String> mTakePhoto = registerForActivityResult(new ActivityResultContracts.GetContent(),
-                result -> avatarImage.setImageURI(result));
-
         avatarImage.setOnClickListener(v -> {
-            /*if(ContextCompat.checkSelfPermission(getActivity().this, Manifest.permission.READ_EXTERNAL_STORAGE) ==
-            PackageManager.per)*/
+            if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) ==
+                    PackageManager.PERMISSION_GRANTED) {
+                CropImage.activity()
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setCropShape(CropImageView.CropShape.OVAL)
+                        .start(getContext(), this);
+            } else {
+                askPermission();
+            }
         });
 
 
@@ -153,5 +163,39 @@ public class AccountFragment extends Fragment {
 
             }
         });
+        avatarImage.setImageURI(user.getPhotoUrl());
+    }
+    private void askPermission() {
+        new AlertDialog.Builder(requireActivity())
+                .setTitle(getString(R.string.permission))
+                .setMessage(getString(R.string.explanation))
+                .setPositiveButton(getString(R.string.proceed), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE);
+                    }
+                }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).create().show();
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == Activity.RESULT_OK) {
+                Uri resultUri = result.getUri();
+                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                        .setPhotoUri(resultUri)
+                        .build();
+
+                user.updateProfile(profileUpdates);
+                avatarImage.setImageURI(resultUri);
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }
     }
 }

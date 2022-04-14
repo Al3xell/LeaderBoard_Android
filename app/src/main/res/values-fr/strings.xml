@@ -31,4 +31,8 @@
     <string name="home">Accueil</string>
     <string name="search">Rechercher</string>
     <string name="account">Compte</string>
+    <string name="permission">Permission</string>
+    <string name="cancel">Annuler</string>
+    <string name="proceed">Accepter</string>
+    <string name="explanation">S\'il vous plaît acceptez les permissions pour pouvoir changer votre avatar</string>
 </resources>
