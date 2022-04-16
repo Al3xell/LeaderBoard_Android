@@ -35,6 +35,4 @@
     <string name="cancel">Annuler</string>
     <string name="proceed">Accepter</string>
     <string name="explanation">S\'il vous plaît acceptez les permissions pour pouvoir changer votre avatar</string>
-    <string name="tounamentName">Nom Tournoi</string>
-    <string name="tounamentDate">Date Tournoi</string>
 </resources>

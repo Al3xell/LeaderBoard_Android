@@ -1,22 +1,12 @@
 package com.example.projet;
 
-import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +14,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -36,19 +33,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
+
+import java.util.Objects;
 
 
 public class AccountFragment extends Fragment {
 
     private static final int READ_EXTERNAL_STORAGE = 1;
-    private Uri mCropImageUri;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser user;
 
     private Button disconnectButton;
+    private Button sendInfoButton;
+    private Button sendPassword;
 
     private ImageView avatarImage;
 
@@ -75,6 +73,10 @@ public class AccountFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        user = firebaseAuth.getCurrentUser();
+
     }
 
     @Override
@@ -82,36 +84,125 @@ public class AccountFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_account, container, false);
-
-        firebaseAuth = FirebaseAuth.getInstance();
-
-        user = firebaseAuth.getCurrentUser();
-
         initComponents(rootView);
-
-        disconnectButton.setOnClickListener(view -> {
+        displayInfo();
+        disconnectButton.setOnClickListener(v -> {
             firebaseAuth.signOut();
             checkUser();
         });
 
-        displayInfo();
-
-        avatarImage.setOnClickListener(v -> {
-            if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) ==
-                    PackageManager.PERMISSION_GRANTED) {
-                CropImage.activity()
-                        .setGuidelines(CropImageView.Guidelines.ON)
-                        .setCropShape(CropImageView.CropShape.OVAL)
-                        .setFixAspectRatio(true)
-                        .start(getContext(), this);
-            } else {
-                askPermission();
+        avatarImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startCropActivity();
             }
         });
 
+        sendInfoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Query checkUser = databaseReference.child(user.getUid());
+                checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            String firstName = snapshot.child("firstName").getValue(String.class);
+                            String lastName = snapshot.child("lastName").getValue(String.class);
+                            String phone = snapshot.child("phoneNumber").getValue(String.class);
+                            if ((!Objects.equals(firstName, nameTxt.getText().toString()) && !nameInput.isErrorEnabled())
+                                    || (!Objects.equals(lastName, surnameTxt.getText().toString()) && !surnameInput.isErrorEnabled())
+                                    || (!Objects.equals(phone, phoneTxt.getText().toString()) && !phoneInput.isErrorEnabled())) {
 
+                                databaseReference.child(user.getUid()).child("firstName").setValue(nameTxt.getText().toString());
+                                databaseReference.child(user.getUid()).child("lastName").setValue(surnameTxt.getText().toString());
+                                databaseReference.child(user.getUid()).child("phoneNumber").setValue(phoneTxt.getText().toString());
+
+                                Toast.makeText(requireContext(), R.string.update_info, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+        });
+
+        sendPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Query checkUser = databaseReference.child(user.getUid());
+                checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            String password = snapshot.child("password").getValue(String.class);
+                            if ((!Objects.equals(password, passwordTxt.getText().toString())
+                                    && !passwordInput.isErrorEnabled())
+                                    && !confirmInput.isErrorEnabled()) {
+
+                                databaseReference.child(user.getUid()).child("password").setValue(passwordTxt.getText().toString());
+                                user.updatePassword(passwordTxt.getText().toString())
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    Log.d("Password modification:","User password updated.");
+                                                }
+                                            }
+                                        });
+
+                                Toast.makeText(requireContext(), R.string.update_info, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+        });
         return rootView;
     }
+
+    private void startCropActivity() {
+        ImagePicker.with(this)
+                .crop()                    //Crop image(Optional), Check Customization for more option
+                .compress(1024)            //Final image size will be less than 1 MB(Optional)
+                .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
+                .start();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            Uri resultUri = data.getData();
+            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                    .setPhotoUri(resultUri)
+                    .build();
+
+            user.updateProfile(profileUpdates)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                avatarImage.setImageURI(user.getPhotoUrl());
+                            }
+                        }
+                    });
+
+        } else if (resultCode == ImagePicker.RESULT_ERROR) {
+            Toast.makeText(requireContext(), ImagePicker.getError(data), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(requireContext(), "Task Cancelled", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void checkUser() {
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         if (firebaseUser == null) {
@@ -125,6 +216,9 @@ public class AccountFragment extends Fragment {
         displayName = rootView.findViewById(R.id.namesLabelAccount);
 
         disconnectButton = rootView.findViewById(R.id.disconnectButtonAccount);
+        sendInfoButton = rootView.findViewById(R.id.sendButtonAccount);
+        sendPassword = rootView.findViewById(R.id.changePasswordButton);
+
 
         avatarImage = rootView.findViewById(R.id.avatarImage);
 
@@ -139,6 +233,8 @@ public class AccountFragment extends Fragment {
         passwordTxt = rootView.findViewById(R.id.passwordTxtAccount);
         confirmPasswordTxt = rootView.findViewById(R.id.confirmTxtAccount);
         phoneTxt = rootView.findViewById(R.id.phoneTxtAccount);
+
+        setupFloatingLabelError();
     }
 
     private void displayInfo() {
@@ -147,16 +243,19 @@ public class AccountFragment extends Fragment {
         checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()) {
+                if (snapshot.exists()) {
                     String firstName = snapshot.child("firstName").getValue(String.class);
                     String lastName = snapshot.child("lastName").getValue(String.class);
                     String phone = snapshot.child("phoneNumber").getValue(String.class);
-                    String display = firstName +" "+ lastName;
+                    Uri avatarUri = user.getPhotoUrl();
+                    String display = firstName + " " + lastName;
 
                     displayName.setText(display);
                     nameTxt.setText(firstName);
                     surnameTxt.setText(lastName);
                     phoneTxt.setText(phone);
+                    avatarImage.setImageURI(avatarUri);
+
                 }
             }
 
@@ -165,40 +264,144 @@ public class AccountFragment extends Fragment {
 
             }
         });
-        avatarImage.setImageURI(user.getPhotoUrl());
-    }
-    private void askPermission() {
-        new AlertDialog.Builder(requireActivity())
-                .setTitle(getString(R.string.permission))
-                .setMessage(getString(R.string.explanation))
-                .setPositiveButton(getString(R.string.proceed), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE);
-                    }
-                }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        }).create().show();
+
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == Activity.RESULT_OK) {
-                Uri resultUri = result.getUri();
-                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                        .setPhotoUri(resultUri)
-                        .build();
-
-                user.updateProfile(profileUpdates);
-                avatarImage.setImageURI(resultUri);
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
-            }
+    boolean isPhoneValid(CharSequence phone) {
+        if (phone.length() != 10) {
+            return false;
+        } else {
+            return android.util.Patterns.PHONE.matcher(phone).matches();
         }
+    }
+
+    private void setupFloatingLabelError() {
+
+        Objects.requireNonNull(nameInput.getEditText()).addTextChangedListener(new TextWatcher() {
+            // ...
+            @Override
+            public void onTextChanged(CharSequence text, int start, int count, int after) {
+                if (text.length() == 0) {
+                    nameInput.setError(getString(R.string.error_name));
+                    nameInput.setErrorEnabled(true);
+                } else {
+                    nameInput.setErrorEnabled(false);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        Objects.requireNonNull(surnameInput.getEditText()).addTextChangedListener(new TextWatcher() {
+            // ...
+            @Override
+            public void onTextChanged(CharSequence text, int start, int count, int after) {
+                if (text.length() == 0) {
+                    surnameInput.setError(getString(R.string.error_surname));
+                    surnameInput.setErrorEnabled(true);
+                } else {
+                    surnameInput.setErrorEnabled(false);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        Objects.requireNonNull(phoneInput.getEditText()).addTextChangedListener(new TextWatcher() {
+            // ...
+            @Override
+            public void onTextChanged(CharSequence text, int start, int count, int after) {
+                if (text.length() == 0) {
+                    phoneInput.setError(getString(R.string.error_phone));
+                    phoneInput.setErrorEnabled(true);
+                } else if (!isPhoneValid(phoneTxt.getText().toString())) {
+                    phoneInput.setError(getString(R.string.error_phone_invalid));
+                    phoneInput.setErrorEnabled(true);
+                } else {
+                    phoneInput.setErrorEnabled(false);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        Objects.requireNonNull(passwordInput.getEditText()).addTextChangedListener(new TextWatcher() {
+            // ...
+            @Override
+            public void onTextChanged(CharSequence text, int start, int count, int after) {
+                if (!passwordTxt.equals(confirmPasswordTxt)) {
+                    confirmInput.setError(getString(R.string.error_confirm_password_invalid));
+                    confirmInput.setErrorEnabled(true);
+                }
+                else {
+                    confirmInput.setErrorEnabled(false);
+                }
+                if (text.length() == 0 ) {
+                    passwordInput.setError(getString(R.string.error_password_required));
+                    passwordInput.setErrorEnabled(true);
+                }
+                else if (text.length() < 6) {
+                    passwordInput.setError(getString(R.string.error_password_invalid));
+                    passwordInput.setErrorEnabled(true);
+                }
+
+                else {
+                    passwordInput.setErrorEnabled(false);
+                }
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        Objects.requireNonNull(confirmInput.getEditText()).addTextChangedListener(new TextWatcher() {
+            // ...
+            @Override
+            public void onTextChanged(CharSequence text, int start, int count, int after) {
+                if (text.length() == 0 ) {
+                    confirmInput.setError(getString(R.string.error_confirm_password_required));
+                    confirmInput.setErrorEnabled(true);
+                }
+                else if (!passwordTxt.getText().toString().equals(confirmPasswordTxt.getText().toString())){
+                    confirmInput.setError(getString(R.string.error_confirm_password_invalid));
+                    confirmInput.setErrorEnabled(true);
+                }
+
+                else {
+                    confirmInput.setErrorEnabled(false);
+                }
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 }
