@@ -5,7 +5,7 @@ plugins {
 
 android {
     compileSdk 31
-    buildToolsVersion '30.0.2'
+    buildToolsVersion '30.0.3'
 
     defaultConfig {
         applicationId "com.example.projet"
@@ -54,8 +54,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore'
     // Also declare the dependency for the Google Play services library and specify its version
     implementation 'com.google.android.gms:play-services-auth:20.1.0'
-    implementation "com.theartofdev.edmodo:android-image-cropper:2.8.0"
+    implementation 'com.github.dhaval2404:imagepicker:2.1'
     implementation 'com.mikhaellopez:circularimageview:4.3.0'
+
+
 
 
 }

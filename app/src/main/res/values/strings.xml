@@ -35,6 +35,7 @@
     <string name="explanation">Please provide permission to be allowed to change your avatar</string>
     <string name="cancel">Cancel</string>
     <string name="proceed">Proceed</string>
+    <string name="update_info">Update Info</string>
 
 
 </resources>

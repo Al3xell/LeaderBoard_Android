@@ -23,7 +23,7 @@
     <string name="error_password_invalid">Le mot de passe doit comporter au moins 6 caractères</string>
     <string name="error_confirm_password_invalid">Les mots de passes ne correspondent pas</string>
     <string name="error_phone">Numéro de téléphone requis</string>
-    <string name="error_phone_invalid">Numéro de téléphone invalid</string>
+    <string name="error_phone_invalid">Numéro de téléphone invalide</string>
     <string name="change_info">Changer vos informations</string>
     <string name="unknown">Inconnue</string>
     <string name="avatar">Avatar</string>
@@ -35,4 +35,5 @@
     <string name="cancel">Annuler</string>
     <string name="proceed">Accepter</string>
     <string name="explanation">S\'il vous plaît acceptez les permissions pour pouvoir changer votre avatar</string>
+    <string name="update_info">Info mis à jour</string>
 </resources>
