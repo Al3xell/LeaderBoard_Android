@@ -5,7 +5,6 @@ import android.app.DatePickerDialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -17,14 +16,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
 
 public class CreateTournamentActivity extends AppCompatActivity {
 
@@ -155,14 +152,9 @@ public class CreateTournamentActivity extends AppCompatActivity {
         Date startDateParse = sdf.parse(startDateDecompose[2]+"-"+startDateDecompose[1]+"-"+startDateDecompose[0]);
         Date endDateParse = sdf.parse(endDateDecompose[2]+"-"+endDateDecompose[1]+"-"+endDateDecompose[0]);
 
-        assert startDateParse != null;
-        int result = startDateParse.compareTo(endDateParse);
-        if (result < 0){
-            return true;
-        }
-        else {
-            return false;
-        }
+        assert endDateParse != null;
+        int result = endDateParse.compareTo(startDateParse);
+        return result > 0;
     }
 
     private void checkInfo() throws ParseException {

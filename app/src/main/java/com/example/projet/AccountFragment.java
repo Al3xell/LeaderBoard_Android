@@ -2,7 +2,6 @@ package com.example.projet;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,8 +21,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -153,19 +150,14 @@ public class AccountFragment extends Fragment {
             });
         });
 
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                deleteUser();
-            }
-        });
+        deleteButton.setOnClickListener(view -> deleteUser());
 
         return rootView;
     }
 
     private void startCropActivity() {
         ImagePicker.with(this)
-                .crop()                    //Crop image(Optional), Check Customization for more option
+                .crop(1, 1)                    //Crop image(Optional), Check Customization for more option
                 .compress(1024)            //Final image size will be less than 1 MB(Optional)
                 .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
                 .start();
@@ -400,24 +392,11 @@ public class AccountFragment extends Fragment {
         new AlertDialog.Builder(getContext())
                 .setTitle(getString(R.string.delete_title))
                 .setMessage(getString(R.string.delete_message))
-                .setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        databaseReference.child(user.getUid()).removeValue();
-                        user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                checkUser();
-                            }
-                        });
-                    }
+                .setPositiveButton(getString(R.string.confirm), (dialogInterface, i) -> {
+                    databaseReference.child(user.getUid()).removeValue();
+                    user.delete().addOnCompleteListener(task -> checkUser());
                 })
-                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                })
+                .setNegativeButton(getString(R.string.cancel), (dialogInterface, i) -> dialogInterface.cancel())
                 .create()
                 .show();
     }
