@@ -17,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
@@ -38,8 +37,6 @@ import java.util.Objects;
 
 
 public class AccountFragment extends Fragment {
-
-    private static final int READ_EXTERNAL_STORAGE = 1;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser user;
@@ -91,80 +88,66 @@ public class AccountFragment extends Fragment {
             checkUser();
         });
 
-        avatarImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startCropActivity();
-            }
-        });
+        avatarImage.setOnClickListener(v -> startCropActivity());
 
-        sendInfoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Query checkUser = databaseReference.child(user.getUid());
-                checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            String firstName = snapshot.child("firstName").getValue(String.class);
-                            String lastName = snapshot.child("lastName").getValue(String.class);
-                            String phone = snapshot.child("phoneNumber").getValue(String.class);
-                            if ((!Objects.equals(firstName, nameTxt.getText().toString()) && !nameInput.isErrorEnabled())
-                                    || (!Objects.equals(lastName, surnameTxt.getText().toString()) && !surnameInput.isErrorEnabled())
-                                    || (!Objects.equals(phone, phoneTxt.getText().toString()) && !phoneInput.isErrorEnabled())) {
+        sendInfoButton.setOnClickListener(v -> {
+            Query checkUser = databaseReference.child(user.getUid());
+            checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        String firstName = snapshot.child("firstName").getValue(String.class);
+                        String lastName = snapshot.child("lastName").getValue(String.class);
+                        String phone = snapshot.child("phoneNumber").getValue(String.class);
+                        if ((!Objects.equals(firstName, nameTxt.getText().toString()) && !nameInput.isErrorEnabled())
+                                || (!Objects.equals(lastName, surnameTxt.getText().toString()) && !surnameInput.isErrorEnabled())
+                                || (!Objects.equals(phone, phoneTxt.getText().toString()) && !phoneInput.isErrorEnabled())) {
 
-                                databaseReference.child(user.getUid()).child("firstName").setValue(nameTxt.getText().toString());
-                                databaseReference.child(user.getUid()).child("lastName").setValue(surnameTxt.getText().toString());
-                                databaseReference.child(user.getUid()).child("phoneNumber").setValue(phoneTxt.getText().toString());
+                            databaseReference.child(user.getUid()).child("firstName").setValue(nameTxt.getText().toString());
+                            databaseReference.child(user.getUid()).child("lastName").setValue(surnameTxt.getText().toString());
+                            databaseReference.child(user.getUid()).child("phoneNumber").setValue(phoneTxt.getText().toString());
 
-                                Toast.makeText(requireContext(), R.string.update_info, Toast.LENGTH_SHORT).show();
-                            }
+                            Toast.makeText(requireContext(), R.string.update_info, Toast.LENGTH_SHORT).show();
                         }
                     }
+                }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
-            }
+                }
+            });
         });
 
-        sendPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Query checkUser = databaseReference.child(user.getUid());
-                checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            String password = snapshot.child("password").getValue(String.class);
-                            if ((!Objects.equals(password, passwordTxt.getText().toString())
-                                    && !passwordInput.isErrorEnabled())
-                                    && !confirmInput.isErrorEnabled()) {
+        sendPassword.setOnClickListener(v -> {
+            Query checkUser = databaseReference.child(user.getUid());
+            checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        String password = snapshot.child("password").getValue(String.class);
+                        if ((!Objects.equals(password, passwordTxt.getText().toString())
+                                && !passwordInput.isErrorEnabled())
+                                && !confirmInput.isErrorEnabled()) {
 
-                                databaseReference.child(user.getUid()).child("password").setValue(passwordTxt.getText().toString());
-                                user.updatePassword(passwordTxt.getText().toString())
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    Log.d("Password modification:","User password updated.");
-                                                }
-                                            }
-                                        });
+                            databaseReference.child(user.getUid()).child("password").setValue(passwordTxt.getText().toString());
+                            user.updatePassword(passwordTxt.getText().toString())
+                                    .addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            Log.d("Password modification:","User password updated.");
+                                        }
+                                    });
 
-                                Toast.makeText(requireContext(), R.string.update_info, Toast.LENGTH_SHORT).show();
-                            }
+                            Toast.makeText(requireContext(), R.string.update_info, Toast.LENGTH_SHORT).show();
                         }
                     }
+                }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
-            }
+                }
+            });
         });
         return rootView;
     }
@@ -187,12 +170,9 @@ public class AccountFragment extends Fragment {
                     .build();
 
             user.updateProfile(profileUpdates)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                avatarImage.setImageURI(user.getPhotoUrl());
-                            }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            avatarImage.setImageURI(user.getPhotoUrl());
                         }
                     });
 

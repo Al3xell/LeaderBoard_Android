@@ -4,59 +4,123 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreateTournament">
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/textInputEditText_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="140dp"
-        android:hint="Nom du tournoi"
-        android:minHeight="48dp"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="0dp" />
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/textInputEditText_nombre"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nombre d'équipe "
-        android:minHeight="48dp"
-        app:layout_constraintEnd_toEndOf="@+id/textInputEditText_name"
-        app:layout_constraintStart_toStartOf="@+id/textInputEditText_name"
-        app:layout_constraintTop_toBottomOf="@+id/textInputEditText_name" />
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/textInputEditText_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Début du tournoi   ex: 06/07/2022"
-        android:minHeight="48dp"
-        app:layout_constraintEnd_toEndOf="@+id/textInputEditText_nombre"
-        app:layout_constraintStart_toStartOf="@+id/textInputEditText_nombre"
-        app:layout_constraintTop_toBottomOf="@+id/textInputEditText_nombre" />
+    tools:context=".CreateTournamentActivity">
 
     <Button
-        android:id="@+id/button_create_tournament"
+        android:id="@+id/createTournamentButton"
         android:layout_width="110dp"
         android:layout_height="60dp"
-        android:text="create"
+        android:text="@string/create"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.784"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.944" />
+        app:layout_constraintTop_toBottomOf="@+id/endDateButton" />
+
+    <TextView
+        android:id="@+id/titleCreateTournament"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/medium_tab"
+        android:text="@string/create_tournament"
+        android:textColor="@color/secondaryTextColor"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/nameTournamentInput"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:hint="@string/tournament_name"
+        app:hintAnimationEnabled="true"
+        app:hintEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleCreateTournament">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/nametournamentTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            tools:ignore="TextContrastCheck" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/numberTeamsInput"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:hint="@string/number_teams"
+        app:hintAnimationEnabled="true"
+        app:hintEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nameTournamentInput">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/numberTeamsTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            tools:ignore="TextContrastCheck" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/numberPlayerInput"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:hint="@string/number_player"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/numberTeamsInput">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/numberPlayerTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/button_retour_tournament"
-        android:layout_width="110dp"
-        android:layout_height="60dp"
-        android:text="retour"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/startDateButton"
+        style="?android:spinnerStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:text="@string/start_date"
+        android:textColor="@color/secondaryTextColor"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.219"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.943" />
+        app:layout_constraintTop_toBottomOf="@+id/numberPlayerInput" />
+
+    <Button
+        android:id="@+id/endDateButton"
+        style="?android:spinnerStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:text="@string/end_date"
+        android:textColor="@color/secondaryTextColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/startDateButton" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

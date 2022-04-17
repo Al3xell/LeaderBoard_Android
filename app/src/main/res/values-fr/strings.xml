@@ -35,4 +35,14 @@
     <string name="cancel">Annuler</string>
     <string name="proceed">Accepter</string>
     <string name="explanation">S\'il vous plaît acceptez les permissions pour pouvoir changer votre avatar</string>
+    <string name="tournament_available">Tournois disponible</string>
+    <string name="add">Ajouter</string>
+    <string name="update_info">Info Mis à Jour</string>
+    <string name="create_tournament">Créer un Tournois</string>
+    <string name="tournament_name">Nom du Tournois</string>
+    <string name="create">Créer</string>
+    <string name="start_date">Début du Tournois</string>
+    <string name="end_date">Fin du Tournois</string>
+    <string name="number_teams">Nombre d\'Équipes</string>
+    <string name="number_player">Nombre de Joueurs par Équipe</string>
 </resources>

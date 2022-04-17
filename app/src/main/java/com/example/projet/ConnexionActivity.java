@@ -59,7 +59,6 @@ public class ConnexionActivity extends AppCompatActivity {
         btn_email.setOnClickListener(v -> {
             Log.d(TAG, "onClick : begin Google SignIn");
             startActivity(new Intent(ConnexionActivity.this, LoginActivity.class));
-            finish();
         });
     }
 
