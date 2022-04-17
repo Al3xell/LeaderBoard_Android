@@ -68,6 +68,7 @@ public class ConnexionActivity extends AppCompatActivity {
 
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         if (firebaseUser != null) {
+            firebaseUser.getIdToken(true);
             startActivity(new Intent(ConnexionActivity.this, MainActivity.class));
             finish();
         }

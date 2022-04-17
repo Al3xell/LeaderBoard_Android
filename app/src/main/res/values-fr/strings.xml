@@ -50,9 +50,9 @@
     <string name="delete_account">Supprimer le compte</string>
     <string name="delete">Supprimer</string>
     <string name="delete_title">Supprimer l\'utilisateur</string>
-    <string name="delete_message">Êtes-vous sûr ?\\nVous allez supprimer votre compte</string>
+    <string name="delete_message">Êtes-vous sûr ?\nVous allez supprimer votre compte</string>
     <string name="confirm">Confirmer</string>
     <string name="error_login">Mauvais Mot de Passe ou Email</string>
     <string name="error_register_exist">Le compte existe déjà !</string>
-    <string name="account_create">Compte Créé...</string>
+    <string name="account_create">Compte Créé…\n</string>
 </resources>
