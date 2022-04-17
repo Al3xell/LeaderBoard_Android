@@ -274,29 +274,8 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                         catch (FirebaseAuthUserCollisionException existingUser) {
                             Log.w(TAG, "createUserWithEmail:failure", existingUser);
-                            Toast.makeText(RegisterActivity.this, "User Already Exist !\nUpdating Info",
+                            Toast.makeText(RegisterActivity.this, getString(R.string.error_register_exist),
                                     Toast.LENGTH_SHORT).show();
-                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    for(DataSnapshot ds : snapshot.getChildren()) {
-
-                                        if(Objects.equals(email, ds.child("email").getValue()))
-                                        {
-                                            assert ds.getKey() != null;
-                                            databaseReference.child(ds.getKey()).child("firstName").setValue(firstNameInput.getText().toString());
-                                            databaseReference.child(ds.getKey()).child("lastName").setValue(lastNameInput.getText().toString());
-                                            databaseReference.child(ds.getKey()).child("password").setValue(passwordInput.getText().toString());
-                                            databaseReference.child(ds.getKey()).child("phoneNumber").setValue(phoneInput.getText().toString());
-                                        }
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
                         }
                         catch (Exception e)
                         {

@@ -1,6 +1,8 @@
 package com.example.projet;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -44,6 +46,7 @@ public class AccountFragment extends Fragment {
     private Button disconnectButton;
     private Button sendInfoButton;
     private Button sendPassword;
+    private Button deleteButton;
 
     private ImageView avatarImage;
 
@@ -149,6 +152,14 @@ public class AccountFragment extends Fragment {
                 }
             });
         });
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteUser();
+            }
+        });
+
         return rootView;
     }
 
@@ -198,7 +209,7 @@ public class AccountFragment extends Fragment {
         disconnectButton = rootView.findViewById(R.id.disconnectButtonAccount);
         sendInfoButton = rootView.findViewById(R.id.sendButtonAccount);
         sendPassword = rootView.findViewById(R.id.changePasswordButton);
-
+        deleteButton = rootView.findViewById(R.id.deleteButton);
 
         avatarImage = rootView.findViewById(R.id.avatarImage);
 
@@ -383,5 +394,31 @@ public class AccountFragment extends Fragment {
 
             }
         });
+    }
+
+    private void deleteUser() {
+        new AlertDialog.Builder(getContext())
+                .setTitle(getString(R.string.delete_title))
+                .setMessage(getString(R.string.delete_message))
+                .setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        databaseReference.child(user.getUid()).removeValue();
+                        user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                checkUser();
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                })
+                .create()
+                .show();
     }
 }

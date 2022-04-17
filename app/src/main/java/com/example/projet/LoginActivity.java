@@ -92,14 +92,14 @@ public class LoginActivity extends AppCompatActivity {
                         {
                             Log.d(TAG, "onComplete: weak_password");
 
-                            Toast.makeText(LoginActivity.this, "Password must be at least 6 characters long !",
+                            Toast.makeText(LoginActivity.this, getString(R.string.error_password_invalid),
                                     Toast.LENGTH_SHORT).show();
                         }
 
                         catch (FirebaseAuthInvalidCredentialsException invalidCredentialsException) {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", invalidCredentialsException);
-                            Toast.makeText(LoginActivity.this, "Wrong Email or Password !",
+                            Toast.makeText(LoginActivity.this, getString(R.string.error_login),
                                     Toast.LENGTH_SHORT).show();
                         }
                         catch (Exception e)

@@ -128,7 +128,7 @@ public class ConnexionActivity extends AppCompatActivity {
                     //check if user is new or existing
                     if (Objects.requireNonNull(authResult.getAdditionalUserInfo()).isNewUser()) {
                         Log.d(TAG, "onSuccess: AccountFragment Created...\n"+email);
-                        Toast.makeText(ConnexionActivity.this, "AccountFragment Created...\n"+email, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ConnexionActivity.this, getString(R.string.account_create)+email, Toast.LENGTH_SHORT).show();
                         sendEmailVerification();
                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -156,7 +156,6 @@ public class ConnexionActivity extends AppCompatActivity {
                     }
                     else {
                         Log.d(TAG, "onSuccess: Existing user...\n"+email);
-                        Toast.makeText(ConnexionActivity.this, "Existing user...\n"+email, Toast.LENGTH_SHORT).show();
                     }
 
                     //start profile activity
