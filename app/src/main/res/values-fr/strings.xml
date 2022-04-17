@@ -45,4 +45,6 @@
     <string name="end_date">Fin du Tournois</string>
     <string name="number_teams">Nombre d\'Équipes</string>
     <string name="number_player">Nombre de Joueurs par Équipe</string>
+    <string name="error_tournament_exist">Le tournois existe déjà !</string>
+    <string name="error_tournament_create_invalid">S\'il vous plaît entrez des informations valides</string>
 </resources>

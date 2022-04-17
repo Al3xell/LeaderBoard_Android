@@ -45,6 +45,8 @@
     <string name="end_date">End date</string>
     <string name="number_teams">Number of Teams</string>
     <string name="number_player">Number of Player per Team</string>
+    <string name="error_tournament_exist">Tournament already exist !</string>
+    <string name="error_tournament_create_invalid">Please enter valid informations</string>
 
 
 </resources>

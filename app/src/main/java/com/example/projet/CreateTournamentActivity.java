@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -116,18 +117,23 @@ public class CreateTournamentActivity extends AppCompatActivity {
     }
 
     private void checkExist(String name){
-        databaseReference.orderByChild("nameTournament").equalTo(name).addValueEventListener(new ValueEventListener() {
+        databaseReference.orderByChild("nameTournament").equalTo(name.trim()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(!snapshot.exists()) {
                     String key = databaseReference.push().getKey();
 
                     assert key != null;
-                    databaseReference.child(key).child("nameTournament").setValue(nameTournamentTxt.getText().toString());
+                    databaseReference.child(key).child("nameTournament").setValue(nameTournamentTxt.getText().toString().trim());
                     databaseReference.child(key).child("numberTeams").setValue(numberTeamsTxt.getText().toString());
                     databaseReference.child(key).child("numberPlayers").setValue(numberPlayersTxt.getText().toString());
                     databaseReference.child(key).child("startDate").setValue(startDate.getText().toString());
                     databaseReference.child(key).child("endDate").setValue(endDate.getText().toString());
+
+                    finish();
+                }
+                else {
+                    Toast.makeText(CreateTournamentActivity.this, getString(R.string.error_tournament_exist), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -166,6 +172,9 @@ public class CreateTournamentActivity extends AppCompatActivity {
                 && !numberTeamsTxt.getText().toString().equals(" ")
                 && validateDates(startDate.getText(), endDate.getText())) {
             checkExist(nameTournamentTxt.getText().toString());
+        }
+        else {
+            Toast.makeText(this, getString(R.string.error_tournament_create_invalid), Toast.LENGTH_SHORT).show();
         }
     }
 }
