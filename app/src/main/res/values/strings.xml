@@ -37,6 +37,7 @@
     <string name="proceed">Proceed</string>
     <string name="tounamentName">Tournament Name</string>
     <string name="tounamentDate">Tournament Start</string>
+    <string name="update_info">update_info</string>
 
 
 </resources>

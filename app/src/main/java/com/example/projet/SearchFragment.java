@@ -1,8 +1,8 @@
 package com.example.projet;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,20 +10,24 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.example.projet.adapter.TournamentItemDecoration;
 import com.example.projet.adapter.TournamentSearch;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class SearchFragment extends Fragment {
 
-    String s1 = "nom du tournoi";
-    String s2 = "debut du tournoi";
-
-    DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://database-tournament-default-rtdb.europe-west1.firebasedatabase.app/").getReference("tournaments");
-
+    DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://database-tournament-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Tournaments");
+    //liste pour stocker les tournois
+    ArrayList<TournamentModel> tournamentList ;
+    RecyclerView verticalRecyclerView;
+    TournamentSearch tournamentSearch;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -39,14 +43,41 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        updateData();
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-        RecyclerView verticalRecyclerView = view.findViewById(R.id.verticalRecyclerView);
+
+        verticalRecyclerView= view.findViewById(R.id.verticalRecyclerView);
         verticalRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        TournamentSearch tournamentSearch = new TournamentSearch(s1, s2);
+
+        tournamentSearch= new TournamentSearch(tournamentList);
+
         verticalRecyclerView.setAdapter(tournamentSearch);
         verticalRecyclerView.addItemDecoration(new TournamentItemDecoration());
 
         return view;
+    }
+
+    public void updateData(){
+        databaseReference.addValueEventListener(new ValueEventListener(){
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot ds : snapshot.getChildren()){
+                    TournamentModel tournament = ds.getValue(TournamentModel.class);
+
+                    if(tournament != null) {
+                        tournamentList.add(tournament);
+                    }
+                }
+                tournamentSearch.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

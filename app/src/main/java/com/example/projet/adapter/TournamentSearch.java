@@ -1,7 +1,5 @@
 package com.example.projet.adapter;
 
-import android.content.Context;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,19 +10,23 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projet.R;
-import com.example.projet.SearchFragment;
+import com.example.projet.TournamentModel;
+
+import java.text.BreakIterator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class TournamentSearch extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
-    String data1, data2;
-    ImageView image;
+    ArrayList<TournamentModel> tournamentList;
+    public TextView nameText, startText;
 
-    public TournamentSearch(String s1, String s2){
 
-        data1 = s1;
-        data2 = s2;
+    public TournamentSearch(ArrayList list){
 
+        tournamentList = list;
     }
 
     @NonNull
@@ -33,27 +35,36 @@ public class TournamentSearch extends RecyclerView.Adapter<RecyclerView.ViewHold
         LayoutInflater inflater = LayoutInflater
                 .from(parent.getContext());
         View view = inflater.inflate(R.layout.vertical_search, parent, false);
-                return new ViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {;
+        //récupe les coordonnées du tournoi
+        TournamentModel currentTournament = tournamentList.get(position);
 
+
+        nameText = holder.itemView.findViewById(R.id.tournamentNameSearch);
+        startText = holder.itemView.findViewById(R.id.tournamentStartSearch);
+
+        nameText.setText(currentTournament.nameTournament) ;
+        startText.setText(currentTournament.startDate);
     }
 
     @Override
     public int getItemCount() {
-        return 10;
+        return tournamentList.size();
     }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView nameText, startText;
-        ImageView imageTournament;
+
+        public ImageView imageTournament;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            nameText = itemView.findViewById(R.id.tournamentNameSearch);
-            startText = itemView.findViewById(R.id.tournamentStartSearch);
+
             imageTournament = itemView.findViewById(R.id.imageSearch);
         }
     }
