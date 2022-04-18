@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CreateTournament"
+            android:name=".CreateTournamentActivity"
             android:exported="false" />
         <activity
             android:name=".SplashScreenActivity"

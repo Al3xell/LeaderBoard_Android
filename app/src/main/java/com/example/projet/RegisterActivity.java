@@ -11,18 +11,14 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
@@ -274,29 +270,8 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                         catch (FirebaseAuthUserCollisionException existingUser) {
                             Log.w(TAG, "createUserWithEmail:failure", existingUser);
-                            Toast.makeText(RegisterActivity.this, "User Already Exist !\nUpdating Info",
+                            Toast.makeText(RegisterActivity.this, getString(R.string.error_register_exist),
                                     Toast.LENGTH_SHORT).show();
-                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    for(DataSnapshot ds : snapshot.getChildren()) {
-
-                                        if(Objects.equals(email, ds.child("email").getValue()))
-                                        {
-                                            assert ds.getKey() != null;
-                                            databaseReference.child(ds.getKey()).child("firstName").setValue(firstNameInput.getText().toString());
-                                            databaseReference.child(ds.getKey()).child("lastName").setValue(lastNameInput.getText().toString());
-                                            databaseReference.child(ds.getKey()).child("password").setValue(passwordInput.getText().toString());
-                                            databaseReference.child(ds.getKey()).child("phoneNumber").setValue(phoneInput.getText().toString());
-                                        }
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
                         }
                         catch (Exception e)
                         {

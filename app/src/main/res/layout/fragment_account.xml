@@ -132,7 +132,7 @@
                 tools:ignore="DuplicateSpeakableTextCheck" />
 
             <View
-                android:id="@+id/divider"
+                android:id="@+id/divider1"
                 android:layout_width="478dp"
                 android:layout_height="1dp"
                 android:layout_marginTop="32dp"
@@ -150,7 +150,7 @@
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider" />
+                app:layout_constraintTop_toBottomOf="@+id/divider1" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/passwordInputAccount"
@@ -204,9 +204,7 @@
                 android:layout_marginStart="@dimen/topLogo"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="@dimen/topLogo"
-                android:layout_marginBottom="32dp"
                 android:text="@string/send"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/confirmInputAccount" />
@@ -221,6 +219,42 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/avatarImage"
                 app:layout_constraintTop_toBottomOf="@+id/namesLabelAccount" />
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="409dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="32dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/changePasswordButton" />
+
+            <TextView
+                android:id="@+id/deleteLabelAccount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/delete_account"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider2" />
+
+            <Button
+                android:id="@+id/deleteButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/topLogo"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="@dimen/topLogo"
+                android:layout_marginBottom="32dp"
+                android:backgroundTint="@color/secondaryColor"
+                android:text="@string/delete"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/deleteLabelAccount" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

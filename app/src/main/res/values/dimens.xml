@@ -2,4 +2,5 @@
 <resources>
     <dimen name="topLogo">100dp</dimen>
     <dimen name="recyclerViewEmphasis">20</dimen>
+    <dimen name="medium_tab">50dp</dimen>
 </resources>
