@@ -20,11 +20,11 @@ import java.util.Objects;
 public class TournamentSearch extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
-    ArrayList<TournamentModel> tournamentList;
+    public ArrayList<TournamentModel> tournamentList;
     public TextView nameText, startText;
 
 
-    public TournamentSearch(ArrayList list){
+    public TournamentSearch(ArrayList<TournamentModel> list){
 
         tournamentList = list;
     }
@@ -40,9 +40,8 @@ public class TournamentSearch extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {;
-        //récupe les coordonnées du tournoi
+        //récup les coordonnées du tournoi
         TournamentModel currentTournament = tournamentList.get(position);
-
 
         nameText = holder.itemView.findViewById(R.id.tournamentNameSearch);
         startText = holder.itemView.findViewById(R.id.tournamentStartSearch);
@@ -56,15 +55,10 @@ public class TournamentSearch extends RecyclerView.Adapter<RecyclerView.ViewHold
         return tournamentList.size();
     }
 
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-
-        public ImageView imageTournament;
-
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageTournament;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
             imageTournament = itemView.findViewById(R.id.imageSearch);
         }
     }

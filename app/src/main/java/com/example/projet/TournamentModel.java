@@ -1,6 +1,5 @@
 package com.example.projet;
 
-import android.widget.ImageView;
 
 public class TournamentModel{
 
@@ -11,13 +10,18 @@ public class TournamentModel{
     public int numberPlayers;
     public int numberTeams;
 
+    public TournamentModel() {
+        // Default constructor required for calls to DataSnapshot.getValue(User.class)
+    }
+
+
     public TournamentModel(String tName, String start, String end, int player,int team) {
 
-        nameTournament = tName;
-        startDate = start;
-        endDate = end;
-        numberPlayers =  player;
-        numberTeams =team;
+        this.nameTournament = tName;
+        this.startDate = start;
+        this.endDate = end;
+        this.numberPlayers =  player;
+        this.numberTeams =team;
 
     }
 

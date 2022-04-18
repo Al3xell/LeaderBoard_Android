@@ -1,7 +1,9 @@
 package com.example.projet;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -120,13 +122,16 @@ public class CreateTournamentActivity extends AppCompatActivity {
                 if(!snapshot.exists()) {
                     String key = databaseReference.push().getKey();
 
-                    assert key != null;
-                    databaseReference.child(key).child("nameTournament").setValue(nameTournamentTxt.getText().toString().trim());
-                    databaseReference.child(key).child("numberTeams").setValue(numberTeamsTxt.getText().toString());
-                    databaseReference.child(key).child("numberPlayers").setValue(numberPlayersTxt.getText().toString());
-                    databaseReference.child(key).child("startDate").setValue(startDate.getText().toString());
-                    databaseReference.child(key).child("endDate").setValue(endDate.getText().toString());
+                    String name = nameTournamentTxt.getText().toString().trim();
+                    String startDateS = startDate.getText().toString();
+                    String endDateS = endDate.getText().toString();
+                    int numberTeams = Integer.parseInt(numberTeamsTxt.getText().toString());
+                    int numberPlayers = Integer.parseInt(numberPlayersTxt.getText().toString());
 
+                    TournamentModel tournamentModel = new TournamentModel(name, startDateS, endDateS, numberPlayers, numberTeams);
+
+                    assert key != null;
+                    databaseReference.child(key).setValue(tournamentModel);
                     finish();
                 }
                 else {
@@ -169,4 +174,5 @@ public class CreateTournamentActivity extends AppCompatActivity {
             Toast.makeText(this, getString(R.string.error_tournament_create_invalid), Toast.LENGTH_SHORT).show();
         }
     }
+
 }

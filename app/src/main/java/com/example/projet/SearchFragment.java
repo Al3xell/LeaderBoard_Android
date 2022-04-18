@@ -1,5 +1,8 @@
 package com.example.projet;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +16,7 @@ import android.view.ViewGroup;
 
 import com.example.projet.adapter.TournamentItemDecoration;
 import com.example.projet.adapter.TournamentSearch;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,8 +28,8 @@ import java.util.ArrayList;
 public class SearchFragment extends Fragment {
 
     DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://database-tournament-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Tournaments");
-    //liste pour stocker les tournois
-    ArrayList<TournamentModel> tournamentList ;
+
+    ArrayList<TournamentModel> tournamentList;
     RecyclerView verticalRecyclerView;
     TournamentSearch tournamentSearch;
 
@@ -40,17 +44,34 @@ public class SearchFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        // fetch updated data
+        tournamentList = new ArrayList<>();
+        tournamentSearch = new TournamentSearch(tournamentList);
+        updateData(tournamentList, tournamentSearch);
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        updateData();
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
 
-        verticalRecyclerView= view.findViewById(R.id.verticalRecyclerView);
+        verticalRecyclerView = view.findViewById(R.id.verticalRecyclerView);
         verticalRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        tournamentSearch= new TournamentSearch(tournamentList);
+        FloatingActionButton addButton = view.findViewById(R.id.addButton);
+
+        addButton.setOnClickListener(view1 -> {
+           startActivity(new Intent(requireActivity(), CreateTournamentActivity.class));
+        });
+
+        tournamentList = new ArrayList<>();
+        tournamentSearch = new TournamentSearch(tournamentList);
+        updateData(tournamentList, tournamentSearch);
 
         verticalRecyclerView.setAdapter(tournamentSearch);
         verticalRecyclerView.addItemDecoration(new TournamentItemDecoration());
@@ -58,20 +79,19 @@ public class SearchFragment extends Fragment {
         return view;
     }
 
-    public void updateData(){
-        databaseReference.addValueEventListener(new ValueEventListener(){
+    public void updateData(ArrayList<TournamentModel> tournamentList, TournamentSearch tournamentSearch){
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener(){
 
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot ds : snapshot.getChildren()){
-                    TournamentModel tournament = ds.getValue(TournamentModel.class);
 
-                    if(tournament != null) {
-                        tournamentList.add(tournament);
-                    }
+
+                    TournamentModel tournament = ds.getValue(TournamentModel.class);
+                    tournamentList.add(tournament);
                 }
                 tournamentSearch.notifyDataSetChanged();
-
             }
 
             @Override

@@ -31,6 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
@@ -237,7 +238,7 @@ public class AccountFragment extends Fragment {
                     nameTxt.setText(firstName);
                     surnameTxt.setText(lastName);
                     phoneTxt.setText(phone);
-                    avatarImage.setImageURI(avatarUri);
+                    Picasso.get().load(avatarUri).into(avatarImage);
 
                 }
             }
@@ -247,7 +248,6 @@ public class AccountFragment extends Fragment {
 
             }
         });
-
     }
 
     boolean isPhoneValid(CharSequence phone) {
