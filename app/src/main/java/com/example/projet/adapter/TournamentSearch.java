@@ -17,38 +17,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class TournamentSearch extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class TournamentSearch extends RecyclerView.Adapter<TournamentSearch.ViewHolder> {
 
 
     public ArrayList<TournamentModel> tournamentList;
-    public TextView nameText, startText;
 
 
-    public TournamentSearch(ArrayList<TournamentModel> list){
-
-        tournamentList = list;
+    public TournamentSearch(ArrayList<TournamentModel> listTournament){
+        tournamentList = listTournament;
     }
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater
-                .from(parent.getContext());
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.vertical_search, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {;
-        //récup les coordonnées du tournoi
-        TournamentModel currentTournament = tournamentList.get(position);
-
-        nameText = holder.itemView.findViewById(R.id.tournamentNameSearch);
-        startText = holder.itemView.findViewById(R.id.tournamentStartSearch);
-
-        nameText.setText(currentTournament.nameTournament) ;
-        startText.setText(currentTournament.startDate);
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.display(tournamentList.get(position));
     }
+
 
     @Override
     public int getItemCount() {
@@ -56,10 +47,21 @@ public class TournamentSearch extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+
         ImageView imageTournament;
+        TextView nameText, startText;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageTournament = itemView.findViewById(R.id.imageSearch);
+            nameText = itemView.findViewById(R.id.tournamentNameSearch);
+            startText = itemView.findViewById(R.id.tournamentStartSearch);
         }
+
+        public void display(TournamentModel tournament) {
+            nameText.setText(tournament.nameTournament);
+            startText.setText(tournament.startDate);
+        }
+
     }
 }

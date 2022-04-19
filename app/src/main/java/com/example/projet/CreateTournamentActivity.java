@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class CreateTournamentActivity extends AppCompatActivity {
 
@@ -56,7 +57,7 @@ public class CreateTournamentActivity extends AppCompatActivity {
                     android.R.style.Theme_Holo_Light_Dialog_MinWidth,
                     startDatePickerDialog,
                     year, month, day);
-            dialog.getDatePicker().setMinDate(cal.getTimeInMillis());
+            dialog.getDatePicker().setMinDate((long)(cal.getTimeInMillis()+24*(3.6*Math.pow(10,6))));
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialog.show();
         });
@@ -67,16 +68,26 @@ public class CreateTournamentActivity extends AppCompatActivity {
 
         endDate = findViewById(R.id.endDateButton);
         endDate.setOnClickListener(view -> {
-            Calendar cal = Calendar.getInstance();
-            int year = cal.get(Calendar.YEAR);
-            int month = cal.get(Calendar.MONTH) ;
-            int day = cal.get(Calendar.DAY_OF_MONTH);
+
+            String[] start = startDate.getText().toString().split("/");
+            int year = Integer.parseInt(start[2]);
+            int month = Integer.parseInt(start[1]);
+            int day = Integer.parseInt(start[0]);
+
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
             DatePickerDialog dialog = new DatePickerDialog(CreateTournamentActivity.this,
                     android.R.style.Theme_Holo_Light_Dialog_MinWidth,
                     endDatePickerDialog,
                     year, month, day);
-            dialog.getDatePicker().setMinDate((long) (cal.getTimeInMillis()+24*(3.6*Math.pow(10,6))));
+            try {
+                Date dateConverted = sdf.parse(startDate.getText().toString());
+                assert dateConverted != null;
+                long date = dateConverted.getTime();
+                dialog.getDatePicker().setMinDate((long) (date+24*(3.6*Math.pow(10,6))));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialog.show();
         });

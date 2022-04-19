@@ -55,6 +55,8 @@
     <string name="account_create">Account Create…\n</string>
     <string name="error_login">Wrong Email or Password !</string>
     <string name="error_register_exist">User Already Exist !</string>
+    <string name="join_tournament_title">Join Tournament</string>
+    <string name="join_tournament_message">Do you want to join this tournament ?</string>
 
 
 </resources>
