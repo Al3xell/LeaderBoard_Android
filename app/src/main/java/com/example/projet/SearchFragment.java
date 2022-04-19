@@ -1,21 +1,19 @@
 package com.example.projet;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.example.projet.adapter.TournamentItemDecoration;
 import com.example.projet.adapter.TournamentSearch;
@@ -29,7 +27,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
@@ -42,6 +39,7 @@ public class SearchFragment extends Fragment {
     ArrayList<TournamentModel> tournamentList;
     RecyclerView verticalRecyclerView;
     TournamentSearch tournamentSearch;
+    TournamentSearch.RecyclerViewClickListener listener;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -54,32 +52,9 @@ public class SearchFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStop() {
+        super.onStop();
         tournamentList.clear();
-        tournamentRef.addValueEventListener(new ValueEventListener() {
-
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot ds : snapshot.getChildren()) {
-                    String startDate = ds.child("startDate").getValue(String.class);
-                    @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                    if(!sdf.format(new Date()).equals(startDate)) {
-                        TournamentModel tournament = ds.getValue(TournamentModel.class);
-                        tournamentList.add(tournament);
-                    }
-                }
-
-                tournamentSearch.tournamentList = tournamentList;
-                tournamentSearch.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     }
 
     @Override
@@ -97,11 +72,12 @@ public class SearchFragment extends Fragment {
         addButton.setOnClickListener(view1 -> startActivity(new Intent(requireActivity(), CreateTournamentActivity.class)));
 
         tournamentList = new ArrayList<>();
-        tournamentSearch = new TournamentSearch(tournamentList);
+        setOnClickListener();
+        tournamentSearch = new TournamentSearch(tournamentList, listener);
 
         verticalRecyclerView.setAdapter(tournamentSearch);
         verticalRecyclerView.addItemDecoration(new TournamentItemDecoration());
-
+        tournamentList.clear();
         tournamentRef.addValueEventListener(new ValueEventListener() {
 
             @SuppressLint("NotifyDataSetChanged")
@@ -157,27 +133,37 @@ public class SearchFragment extends Fragment {
 
         return view;
     }
-    public void createDialog(TournamentModel tournamentItem) {
+
+    private void setOnClickListener() {
+        listener = this::createDialog;
+    }
+
+    public void createDialog(View v, int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
 
         builder.setTitle(getString(R.string.join_tournament_title))
                 .setMessage(getString(R.string.join_tournament_message));
 
-        builder.setPositiveButton(getString(R.string.confirm), (dialogInterface, i) -> addUserToTournament(tournamentItem));
+        builder.setPositiveButton(getString(R.string.confirm), (dialogInterface, i) -> addUserToTournament(position));
         builder.setNegativeButton(getString(R.string.cancel), (dialogInterface, i) -> dialogInterface.cancel());
         AlertDialog joinTournament = builder.create();
         joinTournament.show();
     }
 
-    public void addUserToTournament(TournamentModel tournamentItem) {
+    public void addUserToTournament(int position) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        assert user != null;
-        String nameTournament = tournamentItem.nameTournament;
-        tournamentRef.orderByChild("nameTournament").equalTo(nameTournament).addListenerForSingleValueEvent(new ValueEventListener() {
+        TournamentModel tournament = tournamentList.get(position);
+        String nameTournament = tournament.nameTournament;
+            tournamentRef.orderByChild("nameTournament").equalTo(nameTournament).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                userRef.child(user.getUid()).child("tournamentsIn").child(Objects.requireNonNull(snapshot.getKey())).setValue(tournamentItem);
-                tournamentRef.child(snapshot.getKey()).child("players").child(user.getUid()).child("id").setValue(user.getUid());
+                assert user != null;
+                userRef.child(user.getUid()).child("tournamentsIn").setValue(snapshot.getValue());
+                for(DataSnapshot ds : snapshot.getChildren()) {
+                    if(ds.child("nameTournament").getValue(String.class).equals(nameTournament)) {
+                        ds.getRef().child("players").child(user.getUid()).child("id").setValue(user.getUid());
+                    }
+                }
             }
 
             @Override

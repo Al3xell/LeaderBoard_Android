@@ -19,12 +19,12 @@ import java.util.Objects;
 
 public class TournamentSearch extends RecyclerView.Adapter<TournamentSearch.ViewHolder> {
 
-
     public ArrayList<TournamentModel> tournamentList;
+    private RecyclerViewClickListener listener;
 
-
-    public TournamentSearch(ArrayList<TournamentModel> listTournament){
-        tournamentList = listTournament;
+    public TournamentSearch(ArrayList<TournamentModel> listTournament, RecyclerViewClickListener listener){
+        this.tournamentList = listTournament;
+        this.listener = listener;
     }
 
     @NonNull
@@ -46,7 +46,11 @@ public class TournamentSearch extends RecyclerView.Adapter<TournamentSearch.View
         return tournamentList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public interface RecyclerViewClickListener {
+        void onClick(View v, int position);
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ImageView imageTournament;
         TextView nameText, startText;
@@ -56,6 +60,7 @@ public class TournamentSearch extends RecyclerView.Adapter<TournamentSearch.View
             imageTournament = itemView.findViewById(R.id.imageSearch);
             nameText = itemView.findViewById(R.id.tournamentNameSearch);
             startText = itemView.findViewById(R.id.tournamentStartSearch);
+            itemView.setOnClickListener(this);
         }
 
         public void display(TournamentModel tournament) {
@@ -63,5 +68,9 @@ public class TournamentSearch extends RecyclerView.Adapter<TournamentSearch.View
             startText.setText(tournament.startDate);
         }
 
+        @Override
+        public void onClick(View view) {
+            listener.onClick(view, getAdapterPosition());
+        }
     }
 }
