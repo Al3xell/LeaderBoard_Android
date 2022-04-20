@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
@@ -40,6 +42,7 @@ public class AccountFragment extends Fragment {
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser user;
+
 
     private Button disconnectButton;
     private Button sendInfoButton;
@@ -223,6 +226,7 @@ public class AccountFragment extends Fragment {
 
     private void displayInfo() {
 
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setTitle(R.string.account);
         Query checkUser = databaseReference.child(user.getUid());
         checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

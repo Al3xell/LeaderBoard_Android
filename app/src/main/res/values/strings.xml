@@ -57,6 +57,8 @@
     <string name="error_register_exist">User Already Exist !</string>
     <string name="join_tournament_title">Join Tournament</string>
     <string name="join_tournament_message">Do you want to join this tournament ?</string>
+    <string name="board">Board</string>
+    <string name="search_hint">Search a tournament</string>
 
 
 </resources>

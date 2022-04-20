@@ -6,10 +6,17 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,6 +55,7 @@ public class SearchFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
     }
 
@@ -58,12 +66,23 @@ public class SearchFragment extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+
+        inflater.inflate(R.menu.search_top_bar, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem searchItem = menu.findItem(R.id.app_bar_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        MenuItemCompat.collapseActionView(searchItem);
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setTitle(R.string.search);
         verticalRecyclerView = view.findViewById(R.id.verticalRecyclerView);
         verticalRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
@@ -78,7 +97,8 @@ public class SearchFragment extends Fragment {
         verticalRecyclerView.setAdapter(tournamentSearch);
         verticalRecyclerView.addItemDecoration(new TournamentItemDecoration());
         tournamentList.clear();
-        tournamentRef.addValueEventListener(new ValueEventListener() {
+
+        tournamentRef.orderByChild("nameTournament").addValueEventListener(new ValueEventListener() {
 
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -105,7 +125,7 @@ public class SearchFragment extends Fragment {
         SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             tournamentList.clear();
-            tournamentRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            tournamentRef.orderByChild("nameTournament").addListenerForSingleValueEvent(new ValueEventListener() {
 
                 @SuppressLint("NotifyDataSetChanged")
                 @Override

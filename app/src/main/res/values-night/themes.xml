@@ -1,18 +1,10 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.Projet" parent="Theme.MaterialComponents.NoActionBar">
+    <style name="Theme.Projet.Night" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Status bar color. -->
         <item name="android:textColorPrimary">@color/primaryTextColor</item>
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/primaryColor</item>
-        <item name="colorAccent">@color/primaryLightColor</item>
-        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
-        <item name="colorError">@color/secondaryColor</item>
+        <item name="android:textColorSecondary">@color/primaryTextColor</item>
 
-        <item name="colorOnPrimary">@color/primaryTextColor</item>
-        <item name="colorOnSecondary">@color/primaryTextColor</item>
-        <item name="colorOnBackground">@color/primaryTextColor</item>
-        <item name="colorOnPrimarySurface">@color/primaryTextColor</item>
-        <item name="colorOnError">@color/primaryTextColor</item>
+        <!-- Customize your theme here. -->y
     </style>
 </resources>

@@ -3,8 +3,10 @@ package com.example.projet;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
@@ -17,6 +19,9 @@ import com.google.firebase.auth.FirebaseUser;
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
+    private Toolbar toolbar;
+    private BottomNavigationView bottomNavigationView;
+    private NavController navController;
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -24,21 +29,28 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.home);
+        setSupportActionBar(toolbar);
+
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.navController);
         assert navHostFragment != null;
-        NavController navController = navHostFragment.getNavController();
+        navController = navHostFragment.getNavController();
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.home:
                     navController.navigate(R.id.home);
+                    toolbar.setTitle(R.string.home);
                     return true;
                 case R.id.search:
                     navController.navigate(R.id.search);
+                    toolbar.setTitle(R.string.search);
                     return true;
                 case R.id.account:
                     navController.navigate(R.id.account);
+                    toolbar.setTitle(R.string.account);
                     return true;
             }
             return false;

@@ -1,12 +1,25 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.Projet" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="Theme.Projet" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Status bar color. -->
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
         <!-- Customize your theme here. -->
+        <item name="android:itemTextAppearance">@color/primaryTextColor</item>
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorAccent">@color/primaryLightColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorError">@color/secondaryColor</item>
 
     </style>
+
+    <style name="AppSearchView" parent="Widget.AppCompat.SearchView" >
+        <!-- Text Size -->
+        <!-- Query Text Color -->
+        <item name="android:editTextColor">@android:color/white</item>
+        <!-- Hint Color -->
+        <!-- Icon Color -->
+        <item name="android:tint">@color/primaryTextColor</item>
+    </style>
+
 </resources>
