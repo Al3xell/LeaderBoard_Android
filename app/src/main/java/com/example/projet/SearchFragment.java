@@ -72,6 +72,7 @@ public class SearchFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.app_bar_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setQueryHint(getString(R.string.search_hint));
         MenuItemCompat.collapseActionView(searchItem);
 
     }
@@ -180,7 +181,7 @@ public class SearchFragment extends Fragment {
                 assert user != null;
                 userRef.child(user.getUid()).child("tournamentsIn").setValue(snapshot.getValue());
                 for(DataSnapshot ds : snapshot.getChildren()) {
-                    if(ds.child("nameTournament").getValue(String.class).equals(nameTournament)) {
+                    if(Objects.equals(ds.child("nameTournament").getValue(String.class), nameTournament)) {
                         ds.getRef().child("players").child(user.getUid()).child("id").setValue(user.getUid());
                     }
                 }
