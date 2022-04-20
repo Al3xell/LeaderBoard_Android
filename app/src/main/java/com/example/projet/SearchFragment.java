@@ -74,7 +74,19 @@ public class SearchFragment extends Fragment {
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setQueryHint(getString(R.string.search_hint));
         MenuItemCompat.collapseActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                tournamentSearch.getFilter().filter(query);
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                tournamentSearch.getFilter().filter(newText);
+                return false;
+            }
+        });
     }
 
     @Override
@@ -93,10 +105,6 @@ public class SearchFragment extends Fragment {
 
         tournamentList = new ArrayList<>();
         setOnClickListener();
-        tournamentSearch = new TournamentSearch(tournamentList, listener);
-
-        verticalRecyclerView.setAdapter(tournamentSearch);
-        verticalRecyclerView.addItemDecoration(new TournamentItemDecoration());
         tournamentList.clear();
 
         tournamentRef.orderByChild("nameTournament").addValueEventListener(new ValueEventListener() {
@@ -113,7 +121,10 @@ public class SearchFragment extends Fragment {
                     }
                 }
 
-                tournamentSearch.tournamentList = tournamentList;
+                tournamentSearch = new TournamentSearch(tournamentList, listener);
+
+                verticalRecyclerView.setAdapter(tournamentSearch);
+                verticalRecyclerView.addItemDecoration(new TournamentItemDecoration());
                 tournamentSearch.notifyDataSetChanged();
             }
 

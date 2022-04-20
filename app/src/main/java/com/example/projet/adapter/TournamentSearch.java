@@ -1,8 +1,11 @@
 package com.example.projet.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,16 +17,20 @@ import com.example.projet.TournamentModel;
 
 import java.text.BreakIterator;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
-public class TournamentSearch extends RecyclerView.Adapter<TournamentSearch.ViewHolder> {
+public class TournamentSearch extends RecyclerView.Adapter<TournamentSearch.ViewHolder> implements Filterable {
 
     public ArrayList<TournamentModel> tournamentList;
-    private RecyclerViewClickListener listener;
+    public ArrayList<TournamentModel> tournamentListAll;
+    private final RecyclerViewClickListener listener;
 
     public TournamentSearch(ArrayList<TournamentModel> listTournament, RecyclerViewClickListener listener){
         this.tournamentList = listTournament;
+        this.tournamentListAll = new ArrayList<>(listTournament);
         this.listener = listener;
     }
 
@@ -45,6 +52,39 @@ public class TournamentSearch extends RecyclerView.Adapter<TournamentSearch.View
     public int getItemCount() {
         return tournamentList.size();
     }
+
+    @Override
+    public Filter getFilter() {
+        return filter;
+    }
+
+    Filter filter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            ArrayList<TournamentModel> filteredTournament = new ArrayList<>();
+            if(charSequence.toString().isEmpty()) {
+                filteredTournament.addAll(tournamentListAll);
+            }
+            else {
+                for(TournamentModel tournament : tournamentListAll) {
+                    if(tournament.nameTournament.toLowerCase(Locale.ROOT).trim().contains(charSequence.toString().toLowerCase(Locale.ROOT).trim())) {
+                        filteredTournament.add(tournament);
+                    }
+                }
+            }
+            FilterResults filterResults = new FilterResults();
+            filterResults.values = filteredTournament;
+            return filterResults;
+        }
+
+        @SuppressLint("NotifyDataSetChanged")
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            tournamentList.clear();
+            tournamentList.addAll((List) filterResults.values);
+            notifyDataSetChanged();
+        }
+    };
 
     public interface RecyclerViewClickListener {
         void onClick(View v, int position);
