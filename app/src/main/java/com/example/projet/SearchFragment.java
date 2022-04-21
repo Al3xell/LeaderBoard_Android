@@ -33,6 +33,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -115,9 +116,14 @@ public class SearchFragment extends Fragment {
                 for(DataSnapshot ds : snapshot.getChildren()) {
                     String startDate = ds.child("startDate").getValue(String.class);
                     @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                   if(!sdf.format(new Date()).equals(startDate)) {
-                        TournamentModel tournament = ds.getValue(TournamentModel.class);
-                        tournamentList.add(tournament);
+                    try {
+                        assert startDate != null;
+                        if(new Date().compareTo(sdf.parse(startDate)) < 0) {
+                             TournamentModel tournament = ds.getValue(TournamentModel.class);
+                             tournamentList.add(tournament);
+                         }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
                 }
 
@@ -145,9 +151,14 @@ public class SearchFragment extends Fragment {
                     for(DataSnapshot ds : snapshot.getChildren()) {
                         String startDate = ds.child("startDate").getValue(String.class);
                         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                        if(!sdf.format(new Date()).equals(startDate)) {
-                            TournamentModel tournament = ds.getValue(TournamentModel.class);
-                            tournamentList.add(tournament);
+                        assert startDate != null;
+                        try {
+                            if(new Date().compareTo(sdf.parse(startDate)) < 0) {
+                                TournamentModel tournament = ds.getValue(TournamentModel.class);
+                                tournamentList.add(tournament);
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
                         }
                     }
 
