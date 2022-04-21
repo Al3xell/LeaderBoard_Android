@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +65,7 @@ public class TournamentInfoFragment extends Fragment {
                         int numberTeamIn = (int) ds.child("Teams").getChildrenCount();
                         String teams = numberTeamIn +"/"+tournamentModel.numberTeams;
                         setKey(ds.getKey());
+                        Log.d("key:", getKey());
                         numberTeams.setText(teams);
                     }
                 }
@@ -78,34 +80,35 @@ public class TournamentInfoFragment extends Fragment {
         Button leaveButton = view.findViewById(R.id.leaveButton);
         Button deleteButton = view.findViewById(R.id.deleteTournament);
 
+        assert user != null;
+        if(!tournamentModel.admin.equals(user.getUid())) {
+            deleteButton.setVisibility(View.GONE);
+        }
+
         leaveButton.setOnClickListener(view1 -> {
-            assert user != null;
             userRef.child(user.getUid()).child("tournamentsIn").child(getKey()).removeValue();
             tournamentRef.child(getKey()).child("players").child(user.getUid()).removeValue();
             startActivity(new Intent(requireActivity(), MainActivity.class));
             requireActivity().finish();
         });
 
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userRef.orderByChild("tournamentsIn").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for(DataSnapshot ds : snapshot.getChildren()) {
-                            userRef.child(Objects.requireNonNull(ds.getKey())).child("tournamentsIn").child(getKey()).removeValue();
-                        }
+        deleteButton.setOnClickListener(view12 -> {
+            userRef.orderByChild("tournamentsIn").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for(DataSnapshot ds : snapshot.getChildren()) {
+                        userRef.child(Objects.requireNonNull(ds.getKey())).child("tournamentsIn").child(getKey()).removeValue();
                     }
+                }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
-                tournamentRef.child(getKey()).removeValue();
-                startActivity(new Intent(requireActivity(), MainActivity.class));
-                requireActivity().finish();
-            }
+                }
+            });
+            tournamentRef.child(getKey()).removeValue();
+            startActivity(new Intent(requireActivity(), MainActivity.class));
+            requireActivity().finish();
         });
 
 
