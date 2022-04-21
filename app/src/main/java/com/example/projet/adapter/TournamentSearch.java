@@ -27,6 +27,7 @@ public class TournamentSearch extends RecyclerView.Adapter<TournamentSearch.View
     public ArrayList<TournamentModel> tournamentList;
     public ArrayList<TournamentModel> tournamentListAll;
     private final RecyclerViewClickListener listener;
+    public ArrayList<TournamentModel> teamsList;
 
     public TournamentSearch(ArrayList<TournamentModel> listTournament, RecyclerViewClickListener listener){
         this.tournamentList = listTournament;
