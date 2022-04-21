@@ -217,7 +217,7 @@ public class SearchFragment extends Fragment {
                     if (Objects.equals(ds.child("nameTournament").getValue(String.class), nameTournament)) {
                         if(ds.child("players").getChildrenCount() < numberPlayersTotal){
                             assert user != null;
-                            userRef.child(user.getUid()).child("tournamentsIn").setValue(snapshot.getValue());
+                            userRef.child(user.getUid()).child("tournamentsIn").child(Objects.requireNonNull(ds.getKey())).setValue(ds.getValue());
                             ds.getRef().child("players").child(user.getUid()).child("id").setValue(user.getUid());
                         }
                         else {

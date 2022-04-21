@@ -19,7 +19,7 @@ public class TournamentModel{
     }
 
 
-    public TournamentModel(String tName, String start, String admin, String end, int player,int team) {
+    public TournamentModel(String tName, String start, String end,String admin, int player,int team) {
 
         this.nameTournament = tName;
         this.nameTournamentLower = tName.toLowerCase(Locale.ROOT);
