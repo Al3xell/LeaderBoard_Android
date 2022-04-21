@@ -4,12 +4,14 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -115,10 +117,12 @@ public class SearchFragment extends Fragment {
                 for(DataSnapshot ds : snapshot.getChildren()) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     String startDate = ds.child("startDate").getValue(String.class);
+
+                    long numberPlayersTotal = (long)Objects.requireNonNull(ds.child("numberTeams").getValue())*(long)Objects.requireNonNull(ds.child("numberPlayers").getValue());
                     @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                     try {
                         assert startDate != null;
-                        if(new Date().compareTo(sdf.parse(startDate)) < 0) {
+                        if(new Date().compareTo(sdf.parse(startDate)) < 0 && ds.child("players").getChildrenCount() < numberPlayersTotal) {
                             assert user != null;
                             if (!ds.child("players").child(user.getUid()).exists()) {
                                 TournamentModel tournament = ds.getValue(TournamentModel.class);
@@ -152,13 +156,18 @@ public class SearchFragment extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for(DataSnapshot ds : snapshot.getChildren()) {
+                        long numberPlayersTotal = (long)Objects.requireNonNull(ds.child("numberTeams").getValue())*(long)Objects.requireNonNull(ds.child("numberPlayers").getValue());
                         String startDate = ds.child("startDate").getValue(String.class);
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                         assert startDate != null;
                         try {
-                            if(new Date().compareTo(sdf.parse(startDate)) < 0) {
-                                TournamentModel tournament = ds.getValue(TournamentModel.class);
-                                tournamentList.add(tournament);
+                            if(new Date().compareTo(sdf.parse(startDate)) < 0 && ds.child("players").getChildrenCount() < numberPlayersTotal) {
+                                assert user != null;
+                                if (!ds.child("players").child(user.getUid()).exists()) {
+                                    TournamentModel tournament = ds.getValue(TournamentModel.class);
+                                    tournamentList.add(tournament);
+                                }
                             }
                         } catch (ParseException e) {
                             e.printStackTrace();
@@ -203,11 +212,17 @@ public class SearchFragment extends Fragment {
             tournamentRef.orderByChild("nameTournament").equalTo(nameTournament).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                assert user != null;
-                userRef.child(user.getUid()).child("tournamentsIn").setValue(snapshot.getValue());
-                for(DataSnapshot ds : snapshot.getChildren()) {
-                    if(Objects.equals(ds.child("nameTournament").getValue(String.class), nameTournament)) {
-                        ds.getRef().child("players").child(user.getUid()).child("id").setValue(user.getUid());
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    long numberPlayersTotal = (long)Objects.requireNonNull(ds.child("numberTeams").getValue())*(long)Objects.requireNonNull(ds.child("numberPlayers").getValue());
+                    if (Objects.equals(ds.child("nameTournament").getValue(String.class), nameTournament)) {
+                        if(ds.child("players").getChildrenCount() < numberPlayersTotal){
+                            assert user != null;
+                            userRef.child(user.getUid()).child("tournamentsIn").setValue(snapshot.getValue());
+                            ds.getRef().child("players").child(user.getUid()).child("id").setValue(user.getUid());
+                        }
+                        else {
+                            Toast.makeText(requireContext(), getString(R.string.error_tournament_full), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             }
