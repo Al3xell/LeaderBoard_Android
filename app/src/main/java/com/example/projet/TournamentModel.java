@@ -1,9 +1,10 @@
 package com.example.projet;
 
 
+import java.io.Serializable;
 import java.util.Locale;
 
-public class TournamentModel{
+public class TournamentModel implements Serializable {
 
 
     public String nameTournament;

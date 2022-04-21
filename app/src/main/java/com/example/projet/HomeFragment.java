@@ -1,6 +1,7 @@
 package com.example.projet;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -66,7 +68,7 @@ public class HomeFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
         tournamentList = new ArrayList<>();
-        //setOnClickListener();
+        setOnClickListener();
 
         userRef.child(user.getUid()).child("tournamentsIn").orderByChild("nameTournamentLower").addValueEventListener(new ValueEventListener() {
 
@@ -122,5 +124,18 @@ public class HomeFragment extends Fragment {
             });
         });
         return view;
+    }
+
+    private void setOnClickListener() {
+        listener = this::selectTournament;
+    }
+
+    public void selectTournament(View v, int position) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        TournamentModel tournament = tournamentList.get(position);
+        Intent tournamentIntent = new Intent(requireActivity(), TournamentSelectActivity.class);
+        tournamentIntent.putExtra("Tournament", tournament);
+        startActivity(tournamentIntent);
+        requireActivity().finish();
     }
 }
