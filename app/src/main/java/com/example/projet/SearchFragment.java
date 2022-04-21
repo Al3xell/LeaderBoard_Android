@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -97,7 +96,7 @@ public class SearchFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
         Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setTitle(R.string.search);
-        verticalRecyclerView = view.findViewById(R.id.verticalRecyclerView);
+        verticalRecyclerView = view.findViewById(R.id.recyclerTeams);
         verticalRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
         FloatingActionButton addButton = view.findViewById(R.id.addButton);
@@ -147,7 +146,7 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.refreshTeams);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             tournamentList.clear();
             tournamentRef.orderByChild("nameTournamentLower").addListenerForSingleValueEvent(new ValueEventListener() {

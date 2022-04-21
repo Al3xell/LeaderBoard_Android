@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TournamentInfoFragment">
+
+    <ImageView
+        android:id="@+id/tournamentLogo"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:scaleType="center"
+        android:src="@drawable/tournament"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="TODO" />
+
+    <TextView
+        android:id="@+id/tournamentName"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/tournament_name"
+        android:textAlignment="center"
+        android:textColor="@color/secondaryTextColor"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tournamentLogo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tournamentLogo"
+        app:layout_constraintTop_toTopOf="@+id/tournamentLogo" />
+
+    <Button
+        android:id="@+id/leaveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="@color/secondaryColor"
+        android:text="@string/leave"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tournamentLogo"
+        app:layout_constraintTop_toBottomOf="@+id/tournamentName" />
+
+    <TextView
+        android:id="@+id/numberTeamsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="@dimen/medium_tab"
+        android:text="@string/number_teams"
+        android:textColor="@color/secondaryTextColor"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/leaveButton" />
+
+    <TextView
+        android:id="@+id/startDateTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/start_date"
+        android:textColor="@color/secondaryTextColor"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/numberTeamsTitle"
+        app:layout_constraintTop_toBottomOf="@+id/numberTeamsTitle" />
+
+    <TextView
+        android:id="@+id/endDateTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="@string/end_date"
+        android:textColor="@color/secondaryTextColor"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/startDateTitle"
+        app:layout_constraintTop_toBottomOf="@+id/startDateTitle" />
+
+    <TextView
+        android:id="@+id/numberTeamsLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/medium_tab"
+        android:text="@string/default_number_teams"
+        android:textColor="@color/secondaryTextColor"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/numberTeamsTitle"
+        app:layout_constraintStart_toEndOf="@+id/numberTeamsTitle"
+        app:layout_constraintTop_toTopOf="@+id/numberTeamsTitle" />
+
+    <TextView
+        android:id="@+id/startDateLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/default_date"
+        android:textColor="@color/secondaryTextColor"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/numberTeamsLabel"
+        app:layout_constraintTop_toBottomOf="@+id/numberTeamsLabel" />
+
+    <TextView
+        android:id="@+id/endDateLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/default_date"
+        android:textColor="@color/secondaryTextColor"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/startDateLabel"
+        app:layout_constraintTop_toBottomOf="@+id/startDateLabel" />
+
+    <Button
+        android:id="@+id/deleteTournament"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="@dimen/topLogo"
+        android:backgroundTint="@color/secondaryColor"
+        android:text="@string/delete"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

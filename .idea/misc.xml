@@ -16,6 +16,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.3411458333333333" />
         <entry key="app/src/main/res/layout/activity_splash_screen.xml" value="0.35520833333333335" />
+        <entry key="app/src/main/res/layout/activity_tournament_select.xml" value="0.3338541666666667" />
         <entry key="app/src/main/res/layout/activity_your_tournament.xml" value="0.35520833333333335" />
         <entry key="app/src/main/res/layout/content_firebase_ui.xml" value="0.18229166666666666" />
         <entry key="app/src/main/res/layout/fragment_account.xml" value="0.3338541666666667" />
@@ -23,6 +24,9 @@
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.3338541666666667" />
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.3338541666666667" />
         <entry key="app/src/main/res/layout/fragment_second.xml" value="0.18229166666666666" />
+        <entry key="app/src/main/res/layout/fragment_tournament_info.xml" value="0.3338541666666667" />
+        <entry key="app/src/main/res/layout/fragment_tournament_select.xml" value="0.3338541666666667" />
+        <entry key="app/src/main/res/layout/fragment_tournament_teams.xml" value="0.3338541666666667" />
         <entry key="app/src/main/res/layout/vertical_search.xml" value="0.3338541666666667" />
         <entry key="app/src/main/res/menu/navbar_bottom.xml" value="0.12395833333333334" />
         <entry key="app/src/main/res/menu/search_top_bar.xml" value="0.3338541666666667" />

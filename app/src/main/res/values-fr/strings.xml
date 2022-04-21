@@ -60,4 +60,6 @@
     <string name="board">Classement</string>
     <string name="search_hint">Rechercher un tournoi</string>
     <string name="error_tournament_full">Tournoi plein</string>
+    <string name="about">A propos</string>
+    <string name="leave">Quitter</string>
 </resources>
