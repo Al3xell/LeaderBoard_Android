@@ -57,4 +57,7 @@
     <string name="account_create">Compte Créé…\n</string>
     <string name="join_tournament_title">Rejoindre un tournoi</string>
     <string name="join_tournament_message">Voulez-vous rejoindre ce tournois ?</string>
+    <string name="board">Classement</string>
+    <string name="search_hint">Rechercher un tournoi</string>
+    <string name="error_tournament_full">Tournoi plein</string>
 </resources>
