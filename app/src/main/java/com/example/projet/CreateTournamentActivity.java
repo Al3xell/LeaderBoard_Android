@@ -14,6 +14,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -131,15 +133,18 @@ public class CreateTournamentActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(!snapshot.exists()) {
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     String key = databaseReference.push().getKey();
 
                     String name = nameTournamentTxt.getText().toString().trim();
                     String startDateS = startDate.getText().toString();
                     String endDateS = endDate.getText().toString();
+                    assert user != null;
+                    String admin = user.getUid();
                     int numberTeams = Integer.parseInt(numberTeamsTxt.getText().toString());
                     int numberPlayers = Integer.parseInt(numberPlayersTxt.getText().toString());
 
-                    TournamentModel tournamentModel = new TournamentModel(name, startDateS, endDateS, numberPlayers, numberTeams);
+                    TournamentModel tournamentModel = new TournamentModel(name, startDateS, endDateS, admin, numberPlayers, numberTeams);
 
                     assert key != null;
                     databaseReference.child(key).setValue(tournamentModel);

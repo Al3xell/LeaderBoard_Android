@@ -1,7 +1,6 @@
 package com.example.projet;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +14,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -108,20 +106,25 @@ public class SearchFragment extends Fragment {
         setOnClickListener();
         tournamentList.clear();
 
-        tournamentRef.orderByChild("nameTournament").addValueEventListener(new ValueEventListener() {
+        tournamentRef.orderByChild("nameTournamentLower").addValueEventListener(new ValueEventListener() {
 
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                tournamentList.clear();
                 for(DataSnapshot ds : snapshot.getChildren()) {
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     String startDate = ds.child("startDate").getValue(String.class);
                     @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                     try {
                         assert startDate != null;
                         if(new Date().compareTo(sdf.parse(startDate)) < 0) {
-                             TournamentModel tournament = ds.getValue(TournamentModel.class);
-                             tournamentList.add(tournament);
-                         }
+                            assert user != null;
+                            if (!ds.child("players").child(user.getUid()).exists()) {
+                                TournamentModel tournament = ds.getValue(TournamentModel.class);
+                                tournamentList.add(tournament);
+                            }
+                        }
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -143,7 +146,7 @@ public class SearchFragment extends Fragment {
         SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             tournamentList.clear();
-            tournamentRef.orderByChild("nameTournament").addListenerForSingleValueEvent(new ValueEventListener() {
+            tournamentRef.orderByChild("nameTournamentLower").addListenerForSingleValueEvent(new ValueEventListener() {
 
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
