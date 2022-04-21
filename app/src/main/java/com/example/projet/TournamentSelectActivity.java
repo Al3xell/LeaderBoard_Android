@@ -1,6 +1,7 @@
 package com.example.projet;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -10,6 +11,8 @@ import android.os.Bundle;
 import com.example.projet.adapter.ViewPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 
+import java.io.Serializable;
+
 public class TournamentSelectActivity extends AppCompatActivity {
 
     @Override
@@ -17,14 +20,25 @@ public class TournamentSelectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tournament_select);
 
+        Intent mIntent = getIntent();
+        TournamentModel tournamentModel = (TournamentModel) mIntent.getSerializableExtra("Tournament");
+
+        Toolbar toolbar = findViewById(R.id.toolbarInfo);
+        toolbar.setTitle(tournamentModel.nameTournament);
+        setSupportActionBar(toolbar);
+
         TabLayout tabs = findViewById(R.id.tournamentTabs);
         ViewPager viewPager = findViewById(R.id.viewPager);
 
         tabs.setupWithViewPager(viewPager);
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.addFragment(new TournamentInfoFragment(), getString(R.string.about));
-        viewPagerAdapter.addFragment(new TournamentTeamsFragment(), getString(R.string.board));
+        TournamentInfoFragment tournamentInfoFragment = new TournamentInfoFragment();
+        tournamentInfoFragment.setTournament(tournamentModel);
+        TournamentTeamsFragment tournamentTeamsFragment = new TournamentTeamsFragment();
+        tournamentTeamsFragment.setTournament(tournamentModel);
+        viewPagerAdapter.addFragment(tournamentInfoFragment, getString(R.string.about));
+        viewPagerAdapter.addFragment(tournamentTeamsFragment, getString(R.string.board));
         viewPager.setAdapter(viewPagerAdapter);
     }
 

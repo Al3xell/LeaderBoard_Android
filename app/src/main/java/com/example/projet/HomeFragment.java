@@ -131,7 +131,6 @@ public class HomeFragment extends Fragment {
     }
 
     public void selectTournament(View v, int position) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         TournamentModel tournament = tournamentList.get(position);
         Intent tournamentIntent = new Intent(requireActivity(), TournamentSelectActivity.class);
         tournamentIntent.putExtra("Tournament", tournament);

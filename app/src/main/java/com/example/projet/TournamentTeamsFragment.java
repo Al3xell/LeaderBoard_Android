@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 
 public class TournamentTeamsFragment extends Fragment {
 
+    private TournamentModel tournamentModel;
+
     public TournamentTeamsFragment() {
         // Required empty public constructor
     }
@@ -25,5 +27,9 @@ public class TournamentTeamsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_tournament_teams, container, false);
+    }
+
+    public void setTournament(TournamentModel tournament) {
+        this.tournamentModel = tournament;
     }
 }
