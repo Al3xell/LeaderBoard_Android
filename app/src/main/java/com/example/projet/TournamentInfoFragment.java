@@ -64,8 +64,8 @@ public class TournamentInfoFragment extends Fragment {
                     if(ds.exists()) {
                         int numberTeamIn = (int) ds.child("Teams").getChildrenCount();
                         String teams = numberTeamIn +"/"+tournamentModel.numberTeams;
-                        setKey(ds.getKey());
-                        Log.d("key:", getKey());
+                        setKeyInfo(ds.getKey());
+                        Log.d("key:", getKeyInfo());
                         numberTeams.setText(teams);
                     }
                 }
@@ -86,8 +86,8 @@ public class TournamentInfoFragment extends Fragment {
         }
 
         leaveButton.setOnClickListener(view1 -> {
-            userRef.child(user.getUid()).child("tournamentsIn").child(getKey()).removeValue();
-            tournamentRef.child(getKey()).child("players").child(user.getUid()).removeValue();
+            userRef.child(user.getUid()).child("tournamentsIn").child(getKeyInfo()).removeValue();
+            tournamentRef.child(getKeyInfo()).child("players").child(user.getUid()).removeValue();
             startActivity(new Intent(requireActivity(), MainActivity.class));
             requireActivity().finish();
         });
@@ -97,7 +97,7 @@ public class TournamentInfoFragment extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for(DataSnapshot ds : snapshot.getChildren()) {
-                        userRef.child(Objects.requireNonNull(ds.getKey())).child("tournamentsIn").child(getKey()).removeValue();
+                        userRef.child(Objects.requireNonNull(ds.getKey())).child("tournamentsIn").child(getKeyInfo()).removeValue();
                     }
                 }
 
@@ -106,7 +106,7 @@ public class TournamentInfoFragment extends Fragment {
 
                 }
             });
-            tournamentRef.child(getKey()).removeValue();
+            tournamentRef.child(getKeyInfo()).removeValue();
             startActivity(new Intent(requireActivity(), MainActivity.class));
             requireActivity().finish();
         });
@@ -114,14 +114,11 @@ public class TournamentInfoFragment extends Fragment {
 
         return view;
     }
-
     public void setTournament(TournamentModel tournament) {
         this.tournamentModel = tournament;
     }
-    public void setKey(String key) {
+    public void setKeyInfo(String key) {
         this.keyTournament = key;
     }
-    public String getKey() {
-        return this.keyTournament;
-    }
+    public String getKeyInfo() { return this.keyTournament; }
 }

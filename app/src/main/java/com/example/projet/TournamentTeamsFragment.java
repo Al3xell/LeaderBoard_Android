@@ -3,46 +3,34 @@ package com.example.projet;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.example.projet.adapter.TeamAdapter;
 import com.example.projet.adapter.TournamentItemDecoration;
-import com.example.projet.adapter.TournamentSearch;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Objects;
 
 public class TournamentTeamsFragment extends Fragment {
 
-    private TournamentModel tournamentModel;
-    private String keyTournament;
-    private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    public TournamentModel tournamentModelTeam;
+    public String keyTournamentTeam;
 
     DatabaseReference tournamentRef = FirebaseDatabase.getInstance("https://database-tournament-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Tournaments");
-    DatabaseReference userRef = FirebaseDatabase.getInstance("https://database-tournament-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users");
 
-    ArrayList<String> teamsList;
+    ArrayList<TeamModel> teamsList;
     RecyclerView recyclerViewTeam;
     TeamAdapter teamAdapter;
 
@@ -72,38 +60,28 @@ public class TournamentTeamsFragment extends Fragment {
 
         addButton.setOnClickListener(view1 -> startActivity(new Intent(requireActivity(), CreateTournamentActivity.class)));
 
-        tournamentRef.orderByChild("nameTournament").equalTo(tournamentModel.nameTournament).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot ds : snapshot.getChildren()) {
-                    if(ds.exists()){
-                        setKey(ds.getKey());
-                    }
-                }
-            }
+        teamsList = new ArrayList<>();
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+        recyclerViewTeam = view.findViewById(R.id.recyclerTeams);
 
-            }
-        });
-
-
-
-        tournamentRef.child(keyTournament).child("Teams").addValueEventListener(new ValueEventListener() {
-
+        tournamentRef.orderByChild("nameTournament").equalTo(tournamentModelTeam.nameTournament).addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 teamsList.clear();
                 for(DataSnapshot ds : snapshot.getChildren()) {
+                    setKeyTeams(ds.getKey());
+                    for(DataSnapshot dr : ds.child("Teams").getChildren()) {
+                        TeamModel team = dr.getValue(TeamModel.class);
+                        teamsList.add(team);
+                    }
                 }
 
-                tournamentTeams = new TournamentSearch(teamsList, listener);
+                teamAdapter = new TeamAdapter(teamsList);
 
-                verticalRecyclerView.setAdapter(tournamentTeams);
-                verticalRecyclerView.addItemDecoration(new TournamentItemDecoration());
-                tournamentTeams.notifyDataSetChanged();
+                recyclerViewTeam.setAdapter(teamAdapter);
+                recyclerViewTeam.addItemDecoration(new TournamentItemDecoration());
+                teamAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -115,32 +93,22 @@ public class TournamentTeamsFragment extends Fragment {
         SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.refreshTeams);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             teamsList.clear();
-            tournamentRef.orderByChild("nameTournamentLower").addListenerForSingleValueEvent(new ValueEventListener() {
+            tournamentRef.child(getKeyTeams()).child("Teams").addValueEventListener(new ValueEventListener() {
 
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    teamsList.clear();
                     for(DataSnapshot ds : snapshot.getChildren()) {
-                        long numberPlayersTotal = (long)Objects.requireNonNull(ds.child("numberTeams").getValue())*(long)Objects.requireNonNull(ds.child("numberPlayers").getValue());
-                        String startDate = ds.child("startDate").getValue(String.class);
-                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                        assert startDate != null;
-                        try {
-                            if(new Date().compareTo(sdf.parse(startDate)) < 0 && ds.child("players").getChildrenCount() < numberPlayersTotal) {
-                                assert user != null;
-                                if (!ds.child("players").child(user.getUid()).exists()) {
-                                    TournamentModel tournament = ds.getValue(TournamentModel.class);
-                                    teamsList.add(tournament);
-                                }
-                            }
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
+                        TeamModel team = ds.getValue(TeamModel.class);
+                        teamsList.add(team);
                     }
 
-                    tournamentTeams.teamsList = teamsList;
-                    tournamentTeams.notifyDataSetChanged();
+                    teamAdapter = new TeamAdapter(teamsList);
+
+                    recyclerViewTeam.setAdapter(teamAdapter);
+                    recyclerViewTeam.addItemDecoration(new TournamentItemDecoration());
+                    teamAdapter.notifyDataSetChanged();
                     swipeRefreshLayout.setRefreshing(false);
                 }
 
@@ -155,12 +123,10 @@ public class TournamentTeamsFragment extends Fragment {
     }
 
     public void setTournament(TournamentModel tournament) {
-        this.tournamentModel = tournament;
+        this.tournamentModelTeam = tournament;
     }
-    public void setKey(String key) {
-        this.keyTournament = key;
+    public void setKeyTeams(String key) {
+        this.keyTournamentTeam = key;
     }
-    public String getKey() {
-        return this.keyTournament;
-    }
+    public String getKeyTeams() { return this.keyTournamentTeam; }
 }

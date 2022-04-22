@@ -11,8 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projet.R;
 import com.example.projet.TeamModel;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -44,9 +42,9 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private ImageView teamImage;
-        private TextView  nameTeam;
-        private TextView  numberTeam;
+        private final ImageView teamImage;
+        private final TextView  nameTeam;
+        private final TextView  numberTeam;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

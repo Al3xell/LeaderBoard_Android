@@ -1,17 +1,14 @@
 package com.example.projet;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
+
 import com.example.projet.adapter.ViewPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
-
-import java.io.Serializable;
 
 public class TournamentSelectActivity extends AppCompatActivity {
 

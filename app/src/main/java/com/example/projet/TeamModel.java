@@ -1,14 +1,20 @@
 package com.example.projet;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TeamModel {
-    private final int maxPlayers;
-    private final String nameTeam;
-    private final ArrayList<String> players;
-    private final String imageURI;
+    private int maxPlayers;
+    private String nameTeam;
+    private HashMap<String, HashMap<String, String>> players;
+    private String imageURI;
 
-    TeamModel(int maxPlayers, String nameTeam, ArrayList<String> players, String imageURI) {
+    public TeamModel() {
+        // Default constructor required for calls to DataSnapshot.getValue(User.class)
+    }
+
+
+    public TeamModel(int maxPlayers, String nameTeam, HashMap<String, HashMap<String, String>> players, String imageURI) {
         this.maxPlayers = maxPlayers;
         this.nameTeam = nameTeam;
         this.players  = players;
@@ -19,6 +25,6 @@ public class TeamModel {
     public String getNameTeam() {
         return this.nameTeam;
     }
-    public ArrayList<String> getPlayers() { return this.players; }
+    public HashMap<String, HashMap<String, String>> getPlayers() { return this.players; }
     public String getImageURI() { return this.imageURI; }
 }
