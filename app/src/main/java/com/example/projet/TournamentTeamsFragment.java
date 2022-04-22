@@ -1,13 +1,17 @@
 package com.example.projet;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -24,10 +28,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 
 public class TournamentTeamsFragment extends Fragment {
 
-    public TournamentModel tournamentModelTeam;
+    TournamentModel tournamentModelTeam;
+    UserModel currentUserModel;
     public String keyTournamentTeam;
 
     public FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -35,6 +42,8 @@ public class TournamentTeamsFragment extends Fragment {
     public TeamAdapter.RecyclerViewClickListener listener;
 
     DatabaseReference tournamentRef = FirebaseDatabase.getInstance("https://database-tournament-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Tournaments");
+
+    DatabaseReference usersRef = FirebaseDatabase.getInstance("https://database-tournament-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users");
 
     ArrayList<TeamModel> teamsList;
     RecyclerView recyclerViewTeam;
@@ -61,17 +70,24 @@ public class TournamentTeamsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_tournament_teams, container, false);
+        usersRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                currentUserModel = snapshot.getValue(UserModel.class);
+            }
 
-        FloatingActionButton addButton = view.findViewById(R.id.joinTeamButton);
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
+            }
+        });
+
+        FloatingActionButton addButton = view.findViewById(R.id.addTeamButton);
+
+        addButton.setOnClickListener(view1 -> addTeam());
         setOnClickListener();
-
-        addButton.setOnClickListener(view1 -> startActivity(new Intent(requireActivity(), CreateTournamentActivity.class)));
-
         teamsList = new ArrayList<>();
-
         recyclerViewTeam = view.findViewById(R.id.recycler);
-
         tournamentRef.orderByChild("nameTournament").equalTo(tournamentModelTeam.nameTournament).addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -81,14 +97,16 @@ public class TournamentTeamsFragment extends Fragment {
                     setKeyTeams(ds.getKey());
                     for(DataSnapshot dr : ds.child("Teams").getChildren()) {
                         TeamModel team = dr.getValue(TeamModel.class);
+                        assert team != null;
+                        if(team.players.containsKey(user.getUid())){
+                            addButton.setVisibility(View.GONE);
+                        }
                         teamsList.add(team);
                     }
                 }
 
                 teamAdapter = new TeamAdapter(teamsList, listener);
-
                 recyclerViewTeam.setAdapter(teamAdapter);
-                recyclerViewTeam.addItemDecoration(new TournamentItemDecoration());
                 teamAdapter.notifyDataSetChanged();
             }
 
@@ -109,13 +127,16 @@ public class TournamentTeamsFragment extends Fragment {
                     teamsList.clear();
                     for(DataSnapshot ds : snapshot.getChildren()) {
                         TeamModel team = ds.getValue(TeamModel.class);
+                        assert team != null;
+                        if(team.players.containsKey(user.getUid())){
+                            addButton.setVisibility(View.GONE);
+                        }
                         teamsList.add(team);
                     }
 
                     teamAdapter = new TeamAdapter(teamsList, listener);
 
                     recyclerViewTeam.setAdapter(teamAdapter);
-                    recyclerViewTeam.addItemDecoration(new TournamentItemDecoration());
                     teamAdapter.notifyDataSetChanged();
                     swipeRefreshLayout.setRefreshing(false);
                 }
@@ -140,36 +161,23 @@ public class TournamentTeamsFragment extends Fragment {
         startActivity(teamIntent);
         requireActivity().finish();
     }
-/*
-    private void joinTeam(View view, int i) {
-        if(teamsList.get(i).getPlayers().size() < teamsList.get(i).getMaxPlayers()){
-            tournamentRef.child(getKeyTeams()).child("Teams").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for(DataSnapshot ds : snapshot.getChildren()) {
-                        for(DataSnapshot players : ds.child("players").getChildren()) {
-                            if(Objects.equals(players.child("id").getValue(String.class), user.getUid())) {
-                                Toast.makeText(requireContext(), getString(R.string.error_team_alreadyin), Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                        }
-                        tournamentRef.child(getKeyTeams()).child("Teams").child(Objects.requireNonNull(ds.getKey())).child("players").child(user.getUid()).child("id").setValue(user.getUid());
-                        return
-                    }
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+    private void addTeam() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        builder.setTitle(getString(R.string.create_team))
+                .setMessage(getString(R.string.create_team_message));
+        final EditText nameInputDialog = new EditText(getContext());
+        nameInputDialog.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(nameInputDialog);
 
-                }
-            });
-        }
-        else {
-            Toast.makeText(requireContext(), getString(R.string.error_team_full), Toast.LENGTH_SHORT).show();
-        }
+        builder.setPositiveButton(getString(R.string.confirm), (dialogInterface, i) -> {
+            HashMap<String, UserModel> players = new HashMap<>();
+            players.put(user.getUid(), currentUserModel);
+            tournamentRef.child(getKeyTeams()).child("Teams").push().setValue(new TeamModel(tournamentModelTeam.numberPlayers, nameInputDialog.getText().toString(), players, "default"));
+        });
+        builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.cancel());
+        builder.create().show();
     }
-
- */
 
     public void setTournament(TournamentModel tournament) {
         this.tournamentModelTeam = tournament;

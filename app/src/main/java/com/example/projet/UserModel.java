@@ -1,6 +1,7 @@
 package com.example.projet;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 public class UserModel implements Serializable {
 
@@ -11,6 +12,8 @@ public class UserModel implements Serializable {
     public String password;
     public String phoneNumber;
     public String uri;
+    public boolean inTeam;
+    public HashMap<String, TournamentModel> tournamentsIn;
 
     public UserModel() {}
 
@@ -22,6 +25,7 @@ public class UserModel implements Serializable {
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.uri = uri;
+        this.tournamentsIn = new HashMap<>();
     }
 
     public String getId() { return this.id; }
@@ -31,5 +35,6 @@ public class UserModel implements Serializable {
     public String getPassword() { return this.password; }
     public String getPhoneNumber() { return this.phoneNumber; }
     public String getUri() { return this.uri; }
+    public HashMap<String, TournamentModel> getTournamentsIn() { return this.tournamentsIn; }
 
 }

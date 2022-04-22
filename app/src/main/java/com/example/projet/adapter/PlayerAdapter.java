@@ -1,5 +1,6 @@
 package com.example.projet.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,18 +12,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projet.R;
 import com.example.projet.TeamModel;
+import com.example.projet.UserModel;
+import com.firebase.ui.auth.data.model.User;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.ViewHolder> {
+public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder>{
 
-    public ArrayList<TeamModel> teamsList;
+    public ArrayList<UserModel> usersList;
 
-    private final RecyclerViewClickListener listener;
+    private final PlayerAdapter.RecyclerViewClickListener listener;
 
-    public TeamAdapter(ArrayList<TeamModel> teams, RecyclerViewClickListener listener){
-        this.teamsList = teams;
+    public PlayerAdapter(ArrayList<UserModel> usersList,PlayerAdapter.RecyclerViewClickListener listener) {
+        this.usersList = usersList;
         this.listener = listener;
     }
 
@@ -30,51 +33,49 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.team_item, parent, false);
+        View view = layoutInflater.inflate(R.layout.player_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.display(teamsList.get(position));
+        holder.display(usersList.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return teamsList.size();
+        return usersList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ImageView teamImage;
-        TextView  nameTeam;
-        TextView  numberTeam;
+
+        private final ImageView playerImage;
+        private final TextView namePlayer;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            teamImage  = itemView.findViewById(R.id.imageTeam);
-            nameTeam   = itemView.findViewById(R.id.nameTeamTeam);
-            numberTeam = itemView.findViewById(R.id.numberTeamTeam);
+            playerImage  = itemView.findViewById(R.id.imagePlayer);
+            namePlayer   = itemView.findViewById(R.id.namePlayerPlayer);
             itemView.setOnClickListener(this);
 
         }
-        public void display(TeamModel team) {
-            nameTeam.setText(team.getNameTeam());
-            String number = team.getPlayers().size()+"/"+team.getMaxPlayers();
-            numberTeam.setText(number);
-            if(team.getImageURI().equals("default")) {
-                teamImage.setImageResource(R.drawable.tournament);
+        @SuppressLint("SetTextI18n")
+        public void display(UserModel userModel) {
+            namePlayer.setText(userModel.getFirstName()+" "+userModel.getLastName());
+            if(userModel.getUri().equals("default")) {
+                playerImage.setImageResource(R.drawable.tournament);
             }
             else {
-                Picasso.get().load(team.getImageURI()).into(teamImage);
+                Picasso.get().load(userModel.getUri()).into(playerImage);
             }
         }
-
         @Override
         public void onClick(View view) {
             listener.onClick(view, getBindingAdapterPosition());
         }
     }
+
     public interface RecyclerViewClickListener {
         void onClick(View v, int position);
     }

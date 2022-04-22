@@ -62,4 +62,19 @@
     <string name="error_tournament_full">Tournoi plein</string>
     <string name="about">A propos</string>
     <string name="leave">Quitter</string>
+    <string name="name_team">Nom de l\'Équipe</string>
+    <string name="join_team_title">Rejoindre une Équipe</string>
+    <string name="error_team_alreadyin">Impossible à rejoindre\nVous êtes déjà dans une équipe</string>
+    <string name="error_team_full">L\'équipe est compléte</string>
+    <string name="join">Rejoindre</string>
+    <string name="name_player">Nom du Joueur</string>
+    <string name="join_team_message">Voulez-vous rejoindre cette équipe ?</string>
+    <string name="create_team">Créer une équipe</string>
+    <string name="create_team_message">Entrez le nom de votre équipe</string>
+    <string name="send_message">Envoyer un Message</string>
+    <string name="send_message_message">Entrez votre message</string>
+    <string name="message_confirm">Message envoyé</string>
+    <string name="error_send_message">Erreur ! Votre message n\'a pas été envoyé…</string>
+    <string name="permission_granted">Permission Accordée !</string>
+    <string name="permission_denied">Permission Rejetée !</string>
 </resources>

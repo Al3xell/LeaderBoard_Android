@@ -64,11 +64,22 @@
     <string name="about">About</string>
     <string name="default_number_teams" translatable="false">0/0</string>
     <string name="default_date" translatable="false">01/01/2000</string>
-    <string name="name_team">Name of team</string>
+    <string name="name_team">Name of Team</string>
     <string name="join_team_title">Join Team</string>
     <string name="error_team_alreadyin">Can\'t join\nYou are already in a team</string>
     <string name="error_team_full">Team is full</string>
     <string name="join">join</string>
+    <string name="name_player">Name of Player</string>
+    <string name="join_team_message">Do you want to join this team ?</string>
+    <string name="create_team">Create Team</string>
+    <string name="create_team_message">Please enter the name of your team</string>
+    <string name="default_phone" translatable="false">0611223344</string>
+    <string name="send_message">Send Message</string>
+    <string name="send_message_message">Please insert your message</string>
+    <string name="message_confirm">Message send</string>
+    <string name="error_send_message">Error ! Your message have not been sent…</string>
+    <string name="permission_granted">Permission Granted !</string>
+    <string name="permission_denied">Permission Denied !</string>
 
 
 </resources>

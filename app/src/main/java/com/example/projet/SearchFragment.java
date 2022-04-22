@@ -42,6 +42,8 @@ public class SearchFragment extends Fragment {
 
     DatabaseReference tournamentRef = FirebaseDatabase.getInstance("https://database-tournament-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Tournaments");
     DatabaseReference userRef = FirebaseDatabase.getInstance("https://database-tournament-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users");
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    UserModel userModel;
 
     ArrayList<TournamentModel> tournamentList;
     RecyclerView verticalRecyclerView;
@@ -94,6 +96,18 @@ public class SearchFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
+
+        userRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                userModel = snapshot.getValue(UserModel.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setTitle(R.string.search);
         verticalRecyclerView = view.findViewById(R.id.recycler);
@@ -216,8 +230,9 @@ public class SearchFragment extends Fragment {
                     if (Objects.equals(ds.child("nameTournament").getValue(String.class), nameTournament)) {
                         if(ds.child("players").getChildrenCount() < numberPlayersTotal){
                             assert user != null;
+                            ds.getRef().child("players").child(user.getUid()).setValue(userModel);
                             userRef.child(user.getUid()).child("tournamentsIn").child(Objects.requireNonNull(ds.getKey())).setValue(ds.getValue());
-                            ds.getRef().child("players").child(user.getUid()).child("id").setValue(user.getUid());
+                            userRef.child(user.getUid()).child("tournamentsIn").child(Objects.requireNonNull(ds.getKey())).child("players").child(user.getUid()).setValue(userModel);
                         }
                         else {
                             Toast.makeText(requireContext(), getString(R.string.error_tournament_full), Toast.LENGTH_SHORT).show();
