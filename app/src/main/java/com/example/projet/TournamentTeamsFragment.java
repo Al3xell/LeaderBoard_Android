@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.projet.adapter.TeamAdapter;
 import com.example.projet.adapter.TournamentItemDecoration;
 import com.example.projet.adapter.TournamentSearch;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -35,14 +36,15 @@ import java.util.Objects;
 public class TournamentTeamsFragment extends Fragment {
 
     private TournamentModel tournamentModel;
+    private String keyTournament;
+    private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     DatabaseReference tournamentRef = FirebaseDatabase.getInstance("https://database-tournament-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Tournaments");
     DatabaseReference userRef = FirebaseDatabase.getInstance("https://database-tournament-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users");
 
-    ArrayList<TournamentModel> teamsList;
-    RecyclerView verticalRecyclerView;
-    TournamentSearch tournamentTeams;
-    TournamentSearch.RecyclerViewClickListener listener;
+    ArrayList<String> teamsList;
+    RecyclerView recyclerViewTeam;
+    TeamAdapter teamAdapter;
 
     public TournamentTeamsFragment() {
         // Required empty public constructor
@@ -50,8 +52,8 @@ public class TournamentTeamsFragment extends Fragment {
 
     @Override
     public void onStop() {
-        super.onStop();
         teamsList.clear();
+        super.onStop();
     }
 
     @Override
@@ -66,41 +68,35 @@ public class TournamentTeamsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_tournament_teams, container, false);
 
-        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setTitle(R.string.search);
-        verticalRecyclerView = view.findViewById(R.id.recyclerTeams);
-        verticalRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-
-        FloatingActionButton addButton = view.findViewById(R.id.addButton);
+        FloatingActionButton addButton = view.findViewById(R.id.addTeamButton);
 
         addButton.setOnClickListener(view1 -> startActivity(new Intent(requireActivity(), CreateTournamentActivity.class)));
 
-        teamsList = new ArrayList<>();
+        tournamentRef.orderByChild("nameTournament").equalTo(tournamentModel.nameTournament).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot ds : snapshot.getChildren()) {
+                    if(ds.exists()){
+                        setKey(ds.getKey());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
-        tournamentRef.orderByChild("nameTournamentLower").addValueEventListener(new ValueEventListener() {
+
+        tournamentRef.child(keyTournament).child("Teams").addValueEventListener(new ValueEventListener() {
 
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 teamsList.clear();
                 for(DataSnapshot ds : snapshot.getChildren()) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    String startDate = ds.child("startDate").getValue(String.class);
-
-                    long numberPlayersTotal = (long)Objects.requireNonNull(ds.child("numberTeams").getValue())*(long)Objects.requireNonNull(ds.child("numberPlayers").getValue());
-                    @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                    try {
-                        assert startDate != null;
-                        if(new Date().compareTo(sdf.parse(startDate)) < 0 && ds.child("players").getChildrenCount() < numberPlayersTotal) {
-                            assert user != null;
-                            if (!ds.child("players").child(user.getUid()).exists()) {
-                                TournamentModel tournament = ds.getValue(TournamentModel.class);
-                                teamsList.add(tournament);
-                            }
-                        }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
                 }
 
                 tournamentTeams = new TournamentSearch(teamsList, listener);
@@ -158,8 +154,13 @@ public class TournamentTeamsFragment extends Fragment {
         return view;
     }
 
-
     public void setTournament(TournamentModel tournament) {
         this.tournamentModel = tournament;
+    }
+    public void setKey(String key) {
+        this.keyTournament = key;
+    }
+    public String getKey() {
+        return this.keyTournament;
     }
 }

@@ -15,12 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.projet.R;
 import com.example.projet.TournamentModel;
 
-import java.text.BreakIterator;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 public class TournamentSearch extends RecyclerView.Adapter<TournamentSearch.ViewHolder> implements Filterable {
 
@@ -98,9 +95,9 @@ public class TournamentSearch extends RecyclerView.Adapter<TournamentSearch.View
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageTournament = itemView.findViewById(R.id.imageSearch);
-            nameText = itemView.findViewById(R.id.tournamentNameSearch);
-            startText = itemView.findViewById(R.id.tournamentStartSearch);
+            imageTournament = itemView.findViewById(R.id.imageTeam);
+            nameText = itemView.findViewById(R.id.nameTeamTeam);
+            startText = itemView.findViewById(R.id.numberTeamTeam);
             itemView.setOnClickListener(this);
         }
 

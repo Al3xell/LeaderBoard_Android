@@ -64,6 +64,7 @@
     <string name="about">About</string>
     <string name="default_number_teams" translatable="false">0/0</string>
     <string name="default_date" translatable="false">01/01/2000</string>
+    <string name="name_team">Name of team</string>
 
 
 </resources>
