@@ -19,8 +19,11 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.ViewHolder> {
 
     public ArrayList<TeamModel> teamsList;
 
-    public TeamAdapter(ArrayList<TeamModel> teams){
+    private final RecyclerViewClickListener listener;
+
+    public TeamAdapter(ArrayList<TeamModel> teams, RecyclerViewClickListener listener){
         this.teamsList = teams;
+        this.listener = listener;
     }
 
     @NonNull
@@ -41,7 +44,7 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.ViewHolder> {
         return teamsList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final ImageView teamImage;
         private final TextView  nameTeam;
         private final TextView  numberTeam;
@@ -52,6 +55,7 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.ViewHolder> {
             teamImage  = itemView.findViewById(R.id.imageTeam);
             nameTeam   = itemView.findViewById(R.id.nameTeamTeam);
             numberTeam = itemView.findViewById(R.id.numberTeamTeam);
+            itemView.setOnClickListener(this);
 
         }
         public void display(TeamModel team) {
@@ -65,5 +69,13 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.ViewHolder> {
                 Picasso.get().load(team.getImageURI()).into(teamImage);
             }
         }
+
+        @Override
+        public void onClick(View view) {
+            listener.onClick(view, getBindingAdapterPosition());
+        }
+    }
+    public interface RecyclerViewClickListener {
+        void onClick(View v, int position);
     }
 }

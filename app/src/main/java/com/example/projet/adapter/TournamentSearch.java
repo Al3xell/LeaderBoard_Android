@@ -108,7 +108,7 @@ public class TournamentSearch extends RecyclerView.Adapter<TournamentSearch.View
 
         @Override
         public void onClick(View view) {
-            listener.onClick(view, getAdapterPosition());
+            listener.onClick(view, getBindingAdapterPosition());
         }
     }
 }

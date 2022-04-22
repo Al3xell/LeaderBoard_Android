@@ -1,9 +1,10 @@
 package com.example.projet;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TeamModel {
+public class TeamModel implements Serializable {
     private int maxPlayers;
     private String nameTeam;
     private HashMap<String, HashMap<String, String>> players;

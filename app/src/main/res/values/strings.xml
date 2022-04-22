@@ -65,6 +65,10 @@
     <string name="default_number_teams" translatable="false">0/0</string>
     <string name="default_date" translatable="false">01/01/2000</string>
     <string name="name_team">Name of team</string>
+    <string name="join_team_title">Join Team</string>
+    <string name="error_team_alreadyin">Can\'t join\nYou are already in a team</string>
+    <string name="error_team_full">Team is full</string>
+    <string name="join">join</string>
 
 
 </resources>

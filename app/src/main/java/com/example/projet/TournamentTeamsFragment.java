@@ -15,6 +15,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.projet.adapter.TeamAdapter;
 import com.example.projet.adapter.TournamentItemDecoration;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +29,10 @@ public class TournamentTeamsFragment extends Fragment {
 
     public TournamentModel tournamentModelTeam;
     public String keyTournamentTeam;
+
+    public FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+    public TeamAdapter.RecyclerViewClickListener listener;
 
     DatabaseReference tournamentRef = FirebaseDatabase.getInstance("https://database-tournament-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Tournaments");
 
@@ -56,13 +62,15 @@ public class TournamentTeamsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_tournament_teams, container, false);
 
-        FloatingActionButton addButton = view.findViewById(R.id.addTeamButton);
+        FloatingActionButton addButton = view.findViewById(R.id.joinTeamButton);
+
+        setOnClickListener();
 
         addButton.setOnClickListener(view1 -> startActivity(new Intent(requireActivity(), CreateTournamentActivity.class)));
 
         teamsList = new ArrayList<>();
 
-        recyclerViewTeam = view.findViewById(R.id.recyclerTeams);
+        recyclerViewTeam = view.findViewById(R.id.recycler);
 
         tournamentRef.orderByChild("nameTournament").equalTo(tournamentModelTeam.nameTournament).addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
@@ -77,7 +85,7 @@ public class TournamentTeamsFragment extends Fragment {
                     }
                 }
 
-                teamAdapter = new TeamAdapter(teamsList);
+                teamAdapter = new TeamAdapter(teamsList, listener);
 
                 recyclerViewTeam.setAdapter(teamAdapter);
                 recyclerViewTeam.addItemDecoration(new TournamentItemDecoration());
@@ -90,7 +98,7 @@ public class TournamentTeamsFragment extends Fragment {
             }
         });
 
-        SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.refreshTeams);
+        SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.refresh);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             teamsList.clear();
             tournamentRef.child(getKeyTeams()).child("Teams").addValueEventListener(new ValueEventListener() {
@@ -104,7 +112,7 @@ public class TournamentTeamsFragment extends Fragment {
                         teamsList.add(team);
                     }
 
-                    teamAdapter = new TeamAdapter(teamsList);
+                    teamAdapter = new TeamAdapter(teamsList, listener);
 
                     recyclerViewTeam.setAdapter(teamAdapter);
                     recyclerViewTeam.addItemDecoration(new TournamentItemDecoration());
@@ -121,6 +129,47 @@ public class TournamentTeamsFragment extends Fragment {
 
         return view;
     }
+
+    private void setOnClickListener() { listener = this::viewTeam; }
+
+    private void viewTeam(View view, int i) {
+        Intent teamIntent = new Intent(requireActivity(), TeamPlayersActivity.class);
+        teamIntent.putExtra("TeamModel", teamsList.get(i));
+        teamIntent.putExtra("TournamentModel", tournamentModelTeam);
+        teamIntent.putExtra("key", getKeyTeams());
+        startActivity(teamIntent);
+        requireActivity().finish();
+    }
+/*
+    private void joinTeam(View view, int i) {
+        if(teamsList.get(i).getPlayers().size() < teamsList.get(i).getMaxPlayers()){
+            tournamentRef.child(getKeyTeams()).child("Teams").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for(DataSnapshot ds : snapshot.getChildren()) {
+                        for(DataSnapshot players : ds.child("players").getChildren()) {
+                            if(Objects.equals(players.child("id").getValue(String.class), user.getUid())) {
+                                Toast.makeText(requireContext(), getString(R.string.error_team_alreadyin), Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+                        tournamentRef.child(getKeyTeams()).child("Teams").child(Objects.requireNonNull(ds.getKey())).child("players").child(user.getUid()).child("id").setValue(user.getUid());
+                        return
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+        else {
+            Toast.makeText(requireContext(), getString(R.string.error_team_full), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+ */
 
     public void setTournament(TournamentModel tournament) {
         this.tournamentModelTeam = tournament;

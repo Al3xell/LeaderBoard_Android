@@ -96,7 +96,7 @@ public class SearchFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
         Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setTitle(R.string.search);
-        verticalRecyclerView = view.findViewById(R.id.recyclerTeams);
+        verticalRecyclerView = view.findViewById(R.id.recycler);
         verticalRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
         FloatingActionButton addButton = view.findViewById(R.id.addButton);
@@ -146,7 +146,7 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.refreshTeams);
+        SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.refresh);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             tournamentList.clear();
             tournamentRef.orderByChild("nameTournamentLower").addListenerForSingleValueEvent(new ValueEventListener() {
