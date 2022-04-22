@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.auth.User;
 
 import java.util.Objects;
 
@@ -141,12 +142,8 @@ public class ConnexionActivity extends AppCompatActivity {
                                     }
                                 }
                                 String[] displayName = Objects.requireNonNull(firebaseUser.getDisplayName()).split(" ");
-                                databaseReference.child(firebaseUser.getUid()).child("email").setValue(email);
-                                databaseReference.child(firebaseUser.getUid()).child("firstName").setValue(displayName[0]);
-                                databaseReference.child(firebaseUser.getUid()).child("lastName").setValue(displayName[1]);
-                                databaseReference.child(firebaseUser.getUid()).child("phone").setValue("");
-
-
+                                UserModel userModel = new UserModel(firebaseUser.getUid(), email, displayName[0], displayName[1], "", "", Objects.requireNonNull(firebaseUser.getPhotoUrl()).toString());
+                                databaseReference.child(firebaseUser.getUid()).setValue(userModel);
                             }
 
                             @Override

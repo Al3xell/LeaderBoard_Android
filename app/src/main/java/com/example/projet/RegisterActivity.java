@@ -255,10 +255,13 @@ public class RegisterActivity extends AppCompatActivity {
 
                         //send info to database
                         assert key != null;
-                        databaseReference.child(key).child("firstName").setValue(firstNameInput.getText().toString());
-                        databaseReference.child(key).child("lastName").setValue(lastNameInput.getText().toString());
-                        databaseReference.child(key).child("password").setValue(passwordInput.getText().toString());
-                        databaseReference.child(key).child("phoneNumber").setValue(phoneInput.getText().toString());
+                        UserModel userModel = new UserModel(key,
+                                emailInput.getText().toString(),
+                                firstNameInput.getText().toString(),
+                                lastNameInput.getText().toString(),
+                                passwordInput.getText().toString(),
+                                phoneInput.getText().toString(), "default");
+                        databaseReference.child(key).setValue(userModel);
 
                         //starting activity
                         startActivity(new Intent(RegisterActivity.this, MainActivity.class));

@@ -179,7 +179,8 @@ public class AccountFragment extends Fragment {
             user.updateProfile(profileUpdates)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            avatarImage.setImageURI(user.getPhotoUrl());
+                            Picasso.get().load(resultUri).into(avatarImage);
+                            databaseReference.child(user.getUid()).child("uri").setValue(resultUri.toString());
                         }
                     });
 
@@ -232,17 +233,24 @@ public class AccountFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    String firstName = snapshot.child("firstName").getValue(String.class);
-                    String lastName = snapshot.child("lastName").getValue(String.class);
-                    String phone = snapshot.child("phoneNumber").getValue(String.class);
-                    Uri avatarUri = user.getPhotoUrl();
+                    UserModel userModel = snapshot.getValue(UserModel.class);
+                    assert userModel != null;
+                    String firstName = userModel.getFirstName();
+                    String lastName = userModel.getLastName();
+                    String phone = userModel.getPhoneNumber();
+                    Uri avatarUri = Uri.parse(userModel.getUri());
                     String display = firstName + " " + lastName;
 
                     displayName.setText(display);
                     nameTxt.setText(firstName);
                     surnameTxt.setText(lastName);
                     phoneTxt.setText(phone);
-                    Picasso.get().load(avatarUri).into(avatarImage);
+                    if(userModel.getUri().equals("default")) {
+                        avatarImage.setImageResource(R.drawable.avatar);
+                    }
+                    else {
+                        Picasso.get().load(avatarUri).into(avatarImage);
+                    }
 
                 }
             }
