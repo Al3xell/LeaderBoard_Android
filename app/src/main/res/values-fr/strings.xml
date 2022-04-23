@@ -77,4 +77,8 @@
     <string name="error_send_message">Erreur ! Votre message n\'a pas été envoyé…</string>
     <string name="permission_granted">Permission Accordée !</string>
     <string name="permission_denied">Permission Rejetée !</string>
+    <string name="leave_team_title">Quitter l\'Équipe</string>
+    <string name="leave_team_message">Voulez-vous quitter l\'équipe ?</string>
+    <string name="delete_team_message">Voulez-vous vraiment supprimer cette équipe ?</string>
+    <string name="delete_team_title">Supprimer l\'Équipe</string>
 </resources>
