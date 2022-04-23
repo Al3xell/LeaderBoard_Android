@@ -231,8 +231,9 @@ public class SearchFragment extends Fragment {
                         if(ds.child("players").getChildrenCount() < numberPlayersTotal){
                             assert user != null;
                             ds.getRef().child("players").child(user.getUid()).setValue(userModel);
+                            ds.getRef().child("players").child(user.getUid()).child("tournamentsIn").removeValue();
                             userRef.child(user.getUid()).child("tournamentsIn").child(Objects.requireNonNull(ds.getKey())).setValue(ds.getValue());
-                            userRef.child(user.getUid()).child("tournamentsIn").child(Objects.requireNonNull(ds.getKey())).child("players").child(user.getUid()).setValue(userModel);
+                            userRef.child(user.getUid()).child("tournamentsIn").child(Objects.requireNonNull(ds.getKey())).child("players").removeValue();
                         }
                         else {
                             Toast.makeText(requireContext(), getString(R.string.error_tournament_full), Toast.LENGTH_SHORT).show();

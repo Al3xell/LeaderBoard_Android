@@ -18,6 +18,7 @@ public class TournamentModel implements Serializable {
     public int numberPlayers;
     public int numberTeams;
     public HashMap<String, UserModel> players;
+    public HashMap<String, TeamModel> teams;
 
     public TournamentModel() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -34,6 +35,7 @@ public class TournamentModel implements Serializable {
         this.numberPlayers =  player;
         this.numberTeams =team;
         this.players = new HashMap<>();
+        this.teams = new HashMap<>();
     }
 
     public String getNameTournament() { return this.nameTournament; }
@@ -44,4 +46,5 @@ public class TournamentModel implements Serializable {
     public int getNumberPlayers() { return this.numberPlayers; }
     public int getNumberTeams() { return this.numberTeams; }
     public HashMap<String, UserModel> getPlayers() { return this.players; }
+    public HashMap<String, TeamModel> getTeams() { return this.teams; }
 }

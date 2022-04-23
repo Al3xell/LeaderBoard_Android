@@ -62,7 +62,7 @@ public class TournamentInfoFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     if(ds.exists()) {
-                        int numberTeamIn = (int) ds.child("Teams").getChildrenCount();
+                        int numberTeamIn = (int) ds.child("teams").getChildrenCount();
                         String teams = numberTeamIn +"/"+tournamentModel.numberTeams;
                         setKeyInfo(ds.getKey());
                         Log.d("key:", getKeyInfo());

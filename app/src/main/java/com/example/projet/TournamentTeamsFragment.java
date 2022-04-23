@@ -95,11 +95,13 @@ public class TournamentTeamsFragment extends Fragment {
                 teamsList.clear();
                 for(DataSnapshot ds : snapshot.getChildren()) {
                     setKeyTeams(ds.getKey());
-                    for(DataSnapshot dr : ds.child("Teams").getChildren()) {
+                    for(DataSnapshot dr : ds.child("teams").getChildren()) {
                         TeamModel team = dr.getValue(TeamModel.class);
                         assert team != null;
-                        if(team.players.containsKey(user.getUid())){
-                            addButton.setVisibility(View.GONE);
+                        if(team.players!=null){
+                            if (team.players.containsKey(user.getUid())) {
+                                addButton.setVisibility(View.GONE);
+                            }
                         }
                         teamsList.add(team);
                     }
@@ -119,7 +121,7 @@ public class TournamentTeamsFragment extends Fragment {
         SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.refresh);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             teamsList.clear();
-            tournamentRef.child(getKeyTeams()).child("Teams").addValueEventListener(new ValueEventListener() {
+            tournamentRef.child(getKeyTeams()).child("teams").addValueEventListener(new ValueEventListener() {
 
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
@@ -128,8 +130,10 @@ public class TournamentTeamsFragment extends Fragment {
                     for(DataSnapshot ds : snapshot.getChildren()) {
                         TeamModel team = ds.getValue(TeamModel.class);
                         assert team != null;
-                        if(team.players.containsKey(user.getUid())){
-                            addButton.setVisibility(View.GONE);
+                        if(team.getPlayers() != null){
+                            if (team.players.containsKey(user.getUid())) {
+                                addButton.setVisibility(View.GONE);
+                            }
                         }
                         teamsList.add(team);
                     }
@@ -158,6 +162,7 @@ public class TournamentTeamsFragment extends Fragment {
         teamIntent.putExtra("TeamModel", teamsList.get(i));
         teamIntent.putExtra("TournamentModel", tournamentModelTeam);
         teamIntent.putExtra("key", getKeyTeams());
+        teamIntent.putExtra("currentUser", currentUserModel);
         startActivity(teamIntent);
         requireActivity().finish();
     }
@@ -172,8 +177,16 @@ public class TournamentTeamsFragment extends Fragment {
 
         builder.setPositiveButton(getString(R.string.confirm), (dialogInterface, i) -> {
             HashMap<String, UserModel> players = new HashMap<>();
+            String key = tournamentRef.child(getKeyTeams()).child("teams").push().getKey();
             players.put(user.getUid(), currentUserModel);
-            tournamentRef.child(getKeyTeams()).child("Teams").push().setValue(new TeamModel(tournamentModelTeam.numberPlayers, nameInputDialog.getText().toString(), players, "default"));
+            assert key != null;
+            TeamModel team = new TeamModel(tournamentModelTeam.numberPlayers, key, nameInputDialog.getText().toString(), user.getUid(), players, "default");
+            tournamentRef.child(getKeyTeams()).child("teams").child(key).setValue(team);
+            tournamentRef.child(getKeyTeams()).child("teams").child(key).child("players").child(user.getUid()).child("tournamentsIn").removeValue();
+            if (tournamentModelTeam.getTeams() == null) {
+                tournamentModelTeam.teams = new HashMap<>();
+            }
+            tournamentModelTeam.teams.put(team.getId(), team);
         });
         builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.cancel());
         builder.create().show();

@@ -60,7 +60,13 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.ViewHolder> {
         }
         public void display(TeamModel team) {
             nameTeam.setText(team.getNameTeam());
-            String number = team.getPlayers().size()+"/"+team.getMaxPlayers();
+            String number;
+            if(team.getPlayers()!=null) {
+                number = team.getPlayers().size() + "/" + team.getMaxPlayers();
+            }
+            else {
+                number = 0 + "/" + team.getMaxPlayers();
+            }
             numberTeam.setText(number);
             if(team.getImageURI().equals("default")) {
                 teamImage.setImageResource(R.drawable.tournament);

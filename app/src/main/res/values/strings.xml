@@ -80,6 +80,10 @@
     <string name="error_send_message">Error ! Your message have not been sent…</string>
     <string name="permission_granted">Permission Granted !</string>
     <string name="permission_denied">Permission Denied !</string>
+    <string name="leave_team_title">Leave Team</string>
+    <string name="leave_team_message">Do you want to leave this team ?</string>
+    <string name="delete_team_message">Do you really want to delete this team ?</string>
+    <string name="delete_team_title">Delete Team</string>
 
 
 </resources>

@@ -12,7 +12,6 @@ public class UserModel implements Serializable {
     public String password;
     public String phoneNumber;
     public String uri;
-    public boolean inTeam;
     public HashMap<String, TournamentModel> tournamentsIn;
 
     public UserModel() {}
